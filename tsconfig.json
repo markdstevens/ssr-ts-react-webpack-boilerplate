@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "lib": ["es2015", "es2016", "es2017", "dom"],
+    "outDir": "./dist/",
+    "sourceMap": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "jsx": "react",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "./src",
+    "experimentalDecorators": true,
+    "resolveJsonModule": true,
+    "paths": {
+      "config": [ "config/index.ts"],
+      "components/*": ["common/components/*"],
+      "hooks/*": ["common/hooks/*"],
+      "pages": ["common/pages/index.ts"],
+      "stores/*": ["common/stores/*" ],
+      "routes": [ "common/routes/index.ts" ],
+    }
+  },
+  "include": [
+    "./src/**/*",
+    "declarations.d.ts"
+  ],
+}
