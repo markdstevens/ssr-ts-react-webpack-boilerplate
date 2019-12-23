@@ -1,4 +1,5 @@
 dependencies:
+  '@loadable/component': 5.11.0_react@16.12.0
   axios: 0.19.0
   express: 4.17.1
   react: 16.12.0
@@ -6,6 +7,7 @@ dependencies:
   react-router-dom: 5.1.2_react@16.12.0
 devDependencies:
   '@types/express': 4.17.2
+  '@types/loadable__component': 5.10.0
   '@types/node': 12.12.21
   '@types/react': 16.9.17
   '@types/react-dom': 16.9.4
@@ -61,6 +63,18 @@ packages:
     dev: true
     resolution:
       integrity: sha512-6xnwtvp9DY1EINIKdTfvfeAtCYw4OqBZJhtiqkT3ivjnEfa25VQ3TsKvaFfKm8MyGIEfE95qLe+bNEt3nB0Ylg==
+  /@loadable/component/5.11.0_react@16.12.0:
+    dependencies:
+      '@babel/runtime': 7.7.7
+      hoist-non-react-statics: 3.3.1
+      react: 16.12.0
+    dev: false
+    engines:
+      node: '>=8'
+    peerDependencies:
+      react: '>=16.3.0'
+    resolution:
+      integrity: sha512-RzXAH419hnC6vF/ZAEv+k1JgbE/4G7veZo3RvwQDRfp2BFrwbJp9qasjccuk6RrQR/nWWgufaW/CGlL6NSBNGw==
   /@types/anymatch/1.3.1:
     dev: true
     resolution:
@@ -109,6 +123,12 @@ packages:
     dev: true
     resolution:
       integrity: sha1-7ihweulOEdK4J7y+UnC86n8+ce4=
+  /@types/loadable__component/5.10.0:
+    dependencies:
+      '@types/react': 16.9.17
+    dev: true
+    resolution:
+      integrity: sha512-AaDP1VxV3p7CdPOtOTl3ALgQ6ES4AxJKO9UGj9vJonq/w2yERxwdzFiWNQFh9fEDXEzjxujBlM2RmSJtHV1/pA==
   /@types/mime/2.0.1:
     dev: true
     resolution:
@@ -5375,7 +5395,9 @@ packages:
     resolution:
       integrity: sha512-Ux4ygGWsu2c7isFWe8Yu1YluJmqVhxqK2cLXNQA5AcC3QfbGNpM7fu0Y8b/z16pXLnFxZYvWhd3fhBY9DLmC6Q==
 specifiers:
+  '@loadable/component': ^5.11.0
   '@types/express': ^4.17.2
+  '@types/loadable__component': ^5.10.0
   '@types/node': ^12.12.21
   '@types/react': ^16.9.17
   '@types/react-dom': ^16.9.4

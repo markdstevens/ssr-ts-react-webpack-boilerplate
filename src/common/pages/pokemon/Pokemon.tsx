@@ -1,17 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { IPokemonState, PokemonParams, store } from 'stores/pokemon';
+import { PokemonState, PokemonParams, store } from 'stores/pokemon';
 import { Ability } from 'stores/generated/pokemon-store-types';
 import { useDataFetching } from 'hooks/use-data-fetching';
 import { config } from 'config';
 import { RouteProps } from 'routes';
 
-type PokemonProps = RouteProps<IPokemonState, PokemonParams>;
+type PokemonProps = RouteProps<PokemonState, PokemonParams>;
 
 export const Pokemon: React.FunctionComponent<PokemonProps> = (props: PokemonProps) => {
   const apiURL = `${config.stores.pokemon.baseUrl}/${props.match.params.id}`;
   const [state, dispatch] = store.useCustomState();
-  const { loading, error } = useDataFetching<IPokemonState>(apiURL, state, dispatch);
+  const { loading, error } = useDataFetching<PokemonState>(apiURL, state, dispatch);
 
   if (loading || error) {
     return (
@@ -28,7 +28,7 @@ export const Pokemon: React.FunctionComponent<PokemonProps> = (props: PokemonPro
       <br />
       <Link to="/pokemon/raichu">Raichu</Link>
       <br/>
-      <Link to="/Home">Home</Link>
+      <Link to="/">Home</Link>
     </>
   );
 };
