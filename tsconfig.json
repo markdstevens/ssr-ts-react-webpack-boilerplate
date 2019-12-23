@@ -16,7 +16,7 @@
       "config": [ "config/index.ts"],
       "components/*": ["common/components/*"],
       "hooks/*": ["common/hooks/*"],
-      "pages": ["common/pages/index.ts"],
+      "pages/*": ["common/pages/*"],
       "stores/*": ["common/stores/*" ],
       "routes": [ "common/routes/index.ts" ],
     }
