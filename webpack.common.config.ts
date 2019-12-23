@@ -2,11 +2,11 @@ import * as path from 'path';
 import * as webpack from 'webpack';
 import * as TerserPlugin from 'terser-webpack-plugin';
 import * as TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
+import * as LoadablePlugin from '@loadable/webpack-plugin';
 
 export const commonWebpackConfig: webpack.Configuration = {
   mode: process.env.NODE_ENV === 'development' ? 'development' : 'production',
   output: {
-    chunkFilename: '[name].bundle.js',
     path: path.resolve(process.cwd(), 'dist'),
     publicPath: '/',
     globalObject: 'this'
@@ -20,11 +20,7 @@ export const commonWebpackConfig: webpack.Configuration = {
       {
         test: /\.tsx?$/,
         exclude: /node_modules/,
-        use: [
-          {
-            loader: 'ts-loader',
-          }
-        ]
+        use: ['babel-loader', 'ts-loader'],
       }
     ]
   },
@@ -37,6 +33,7 @@ export const commonWebpackConfig: webpack.Configuration = {
     }
   },
   plugins: [
+    new LoadablePlugin(),
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV)

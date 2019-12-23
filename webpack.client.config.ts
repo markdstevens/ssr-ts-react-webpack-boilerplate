@@ -7,5 +7,6 @@ export default merge.smart(config.commonWebpackConfig, {
   target: 'web',
   output: {
     filename: `client.js`,
+    chunkFilename: '[name].client.bundle.js',
   }
 });

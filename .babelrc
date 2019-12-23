@@ -1,5 +1,5 @@
 {
   "plugins": [
-    "@loadable/babel-plugin",
+    "@loadable/babel-plugin"
   ]
 }
