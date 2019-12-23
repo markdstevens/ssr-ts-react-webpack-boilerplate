@@ -8,5 +8,6 @@ export default merge.smart(config.commonWebpackConfig, {
   externals: [nodeExternals()],
   output: {
     filename: `server.js`,
+    chunkFilename: '[name].server.bundle.js',
   }
 });

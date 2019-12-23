@@ -7,7 +7,6 @@ import * as LoadablePlugin from '@loadable/webpack-plugin';
 export const commonWebpackConfig: webpack.Configuration = {
   mode: process.env.NODE_ENV === 'development' ? 'development' : 'production',
   output: {
-    chunkFilename: '[name].bundle.js',
     path: path.resolve(process.cwd(), 'dist'),
     publicPath: '/',
     globalObject: 'this'
@@ -21,11 +20,7 @@ export const commonWebpackConfig: webpack.Configuration = {
       {
         test: /\.tsx?$/,
         exclude: /node_modules/,
-        use: [
-          {
-            loader: 'ts-loader',
-          }
-        ]
+        use: ['babel-loader', 'ts-loader'],
       }
     ]
   },

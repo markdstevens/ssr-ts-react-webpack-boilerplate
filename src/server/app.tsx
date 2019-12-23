@@ -47,8 +47,7 @@ server.get("*", (req, res, next) => {
           </div>
         </body>
         <script>window.__INITIAL_STATE__=${JSON.stringify(data)}</script>
-        <script src="/vendors~main.bundle.js"></script>
-        <script src="/client.js" defer></script>
+        ${scriptTags}
       </html>
     `);
   }).catch(next)
