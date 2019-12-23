@@ -32,8 +32,6 @@ server.get("*", (req, res, next) => {
     const html = renderToString(tsx);
     const scriptTags = extractor.getScriptTags();
 
-    console.log(scriptTags);
-  
     res.send(`
       <!DOCTYPE html>
       <html>
