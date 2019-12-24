@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, Dispatch } from 'react';
 import axios from 'axios';
-import { IState } from 'stores/base';
+import { GenericState } from 'stores/base';
 
 export interface UseDataFetchingResponse<T>{
   error: string;
@@ -20,7 +20,7 @@ export interface UseDataFetchingResponse<T>{
  * The first setState is what triggers any interstitial behavior. The second setState undoes that. The 
  * dispatch method updates the application state with the response from axios.
 */
-export function useDataFetching<T>(dataSource: string, initialState: T, dispatch: Dispatch<IState<any>>): UseDataFetchingResponse<T> {
+export function useDataFetching<T>(dataSource: string, initialState: T, dispatch: Dispatch<GenericState>): UseDataFetchingResponse<T> {
   const didMount = useRef(false);
   const [state, setState] = useState({
     error: null,

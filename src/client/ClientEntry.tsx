@@ -2,13 +2,17 @@ import React from 'react';
 import { hydrate } from 'react-dom';
 import { BrowserRouter } from 'react-router-dom'
 import { App } from 'components/App';
+import { GenericState } from 'stores/base';
 
-// @ts-ignore
-const data = window.__INITIAL_STATE__;
+declare global {
+  interface Window { 
+    __INITIAL_STATE__: GenericState;
+  }
+}
 
 hydrate(
     <BrowserRouter>
-        <App data={data} />
+        <App data={window.__INITIAL_STATE__} />
     </BrowserRouter>,
     document.getElementById('app')
 )
