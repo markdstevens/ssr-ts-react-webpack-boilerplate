@@ -5,10 +5,10 @@ import { App } from 'components/App';
 import { GenericState } from 'stores/base';
 
 declare global {
-    interface Window { 
-      __INITIAL_STATE__: GenericState;
-    }
+  interface Window { 
+    __INITIAL_STATE__: GenericState;
   }
+}
 
 hydrate(
     <BrowserRouter>
