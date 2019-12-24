@@ -1,41 +1,16 @@
-import React, { Dispatch, createContext, useReducer, useContext } from 'react';
-import axios from 'axios';
+import React, { createContext, useReducer, useContext } from 'react';
+import { Store, IProvider, Reducer } from 'stores/base';
 
-export interface IState<T> {
-  data?: T;
-}
-
-export type GenericState = IState<any>;
-
-export type Reducer<T> = [T, Dispatch<T>]
-export type ReducerFunc<T, R> = (previousState: T, action: R) => T
-
-export interface IProvider<T> {
-  reducer: ReducerFunc<T, T>;
-  initialState: T;
-  children: React.ReactNode;
-}
-
-export async function fetchWrapper<T>(url: string): Promise<GenericState> {
-  try {
-    const data = await axios.get<T>(url);
-    if (data?.data) {
-      return {
-        data: data.data
-      };
-    }
-  } catch (e) {
-    console.error(`request failed: ${url}`);
-  }
-};
-
-export interface Store<T> {
-  CustomProvider: React.FunctionComponent<IProvider<T>>;
-  useCustomState: () => Reducer<T>;
-  reducer: ReducerFunc<T, T>;
-}
-
-export function initStore<T>(reducer: ReducerFunc<T, T>): Store<T> {
+/**
+ * @description
+ *   initStore provides all the boilerplate code to setup route based providers
+ *   using react hooks and context. This method essentially replaces mobx and redux
+ *   as application state management solutions. 
+ * 
+ * @returns {Store<T>}
+ * 
+ */
+export function initStore<T>(): Store<T> {
   const CustomContext = createContext<Partial<T | Reducer<T>>>({});
 
   const store: Store<T> = {
@@ -51,7 +26,7 @@ export function initStore<T>(reducer: ReducerFunc<T, T>): Store<T> {
     useCustomState: (): Reducer<T> => {
       return (useContext(CustomContext) as Reducer<T>)
     },
-    reducer
+    reducer: (prevState: T, nextState: T) => Object.assign({}, prevState, nextState)
   };
   store.CustomProvider.displayName = 'CustomProvider';
   return store;

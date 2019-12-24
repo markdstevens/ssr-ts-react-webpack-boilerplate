@@ -5,14 +5,15 @@
   "author": "Mark Stevens <mdstevens94@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "webpack": "tsc --lib es6 webpack.*.config.ts && npm-run-all -p webpack:client webpack:server && rm webpack.*.config.js",
-    "webpack:client": "webpack --config webpack.client.config.js",
-    "webpack:server": "webpack --config webpack.server.config.js",
-    "start": "rimraf dist && NODE_ENV=production pnpm run webpack && NODE_ENV=production node dist/server.js",
+    "webpack:dev": "tsc --lib es6 webpack.config.ts && webpack --env.dev && rm webpack.config.js",
+    "webpack": "tsc --lib es6 webpack.config.ts && webpack --env.prod && rm webpack.config.js",
     "nodemon": "nodemon",
-    "watch": "NODE_ENV=development onchange 'src/**/*.{ts,tsx}' -- pnpm run webpack",
-    "start:dev": "rimraf dist && NODE_ENV=development pnpm run webpack && npm-run-all -p watch nodemon",
-    "lint": "tsc --noEmit && eslint '*/**/*.{js,ts,tsx}' --quiet --fix"
+    "watch": "onchange 'src/**/*.{ts,tsx}' -- pnpm run webpack:dev",
+    "lint": "tsc --noEmit && eslint '*/**/*.{js,ts,tsx}' --quiet --fix",
+    "build": "rimraf dist && pnpm run webpack",
+    "start": "pnpm run build && node dist/server.js",
+    "build:dev": "rimraf dist && pnpm run webpack:dev",
+    "start:dev": "pnpm run build:dev && npm-run-all -p watch nodemon"
   },
   "devDependencies": {
     "@loadable/webpack-plugin": "^5.7.1",

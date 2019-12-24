@@ -19,7 +19,11 @@
       "pages/*": ["common/pages/*"],
       "stores/*": ["common/stores/*" ],
       "routes": [ "common/routes/index.ts" ],
-    }
+      "utils": [ "common/utils/index.ts" ]
+    },
+    "typeRoots" : [
+      "./src/common/types"
+    ]
   },
   "include": [
     "./src/**/*",
