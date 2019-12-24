@@ -1,5 +1,5 @@
 import React, { Dispatch, createContext, useReducer, useContext } from 'react';
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 
 export interface IState<T> {
   data?: T;
@@ -16,7 +16,7 @@ export interface IProvider<T> {
   children: React.ReactNode;
 }
 
-export async function fetchWrapper<T>(url: string): Promise<IState<any>> {
+export async function fetchWrapper<T>(url: string): Promise<GenericState> {
   try {
     const data = await axios.get<T>(url);
     if (data?.data) {

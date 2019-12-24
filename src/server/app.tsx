@@ -4,7 +4,7 @@ import express from 'express';
 import { renderToString } from 'react-dom/server';
 import { App } from 'components/App';
 import { StaticRouter, matchPath } from 'react-router-dom';
-import { routes, IRoute } from 'routes';
+import { routes, Route } from 'routes';
 import { GenericState } from 'stores/base';
 import { ChunkExtractor } from '@loadable/server'
 
@@ -16,7 +16,7 @@ server.use(express.static('dist'));
 server.get("*", (req, res, next) => {
   const extractor = new ChunkExtractor({ statsFile })
 
-  const activeRoute: IRoute | null = routes.find(route => matchPath(req.url, route)) || null;
+  const activeRoute: Route | null = routes.find(route => matchPath(req.url, route)) || null;
 
   const promise: Promise<GenericState | void> = activeRoute?.fetchInitialData
     ? activeRoute.fetchInitialData(req)

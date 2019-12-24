@@ -1,12 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { PokemonState, PokemonParams, store } from 'stores/pokemon';
+import { PokemonState, PokemonProps, store } from 'stores/pokemon';
 import { Ability } from 'stores/generated/pokemon-store-types';
 import { useDataFetching } from 'hooks/use-data-fetching';
 import { config } from 'config';
-import { RouteProps } from 'routes';
-
-type PokemonProps = RouteProps<PokemonState, PokemonParams>;
 
 export const Pokemon: React.FunctionComponent<PokemonProps> = (props: PokemonProps) => {
   const apiURL = `${config.stores.pokemon.baseUrl}/${props.match.params.id}`;
