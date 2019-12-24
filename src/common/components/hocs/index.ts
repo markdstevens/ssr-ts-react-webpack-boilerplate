@@ -1,1 +1,1 @@
-export * from './RouterWrapper';
+export * from './WithStatefulRoute';

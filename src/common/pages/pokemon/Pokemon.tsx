@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { PokemonState, PokemonProps, store } from 'stores/pokemon';
-import { Ability } from 'stores/generated/pokemon-store-types';
+import { Ability } from 'stores/pokemon/generated/pokemon-api-full';
 import { useDataFetching } from 'hooks/use-data-fetching';
 import { config } from 'config';
 

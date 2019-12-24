@@ -1,26 +1,33 @@
 import { useState, useEffect, useRef, Dispatch } from 'react';
-import axios from 'axios';
 import { GenericState } from 'stores/base';
+import { axiosWrapper } from 'utils';
 
 export interface UseDataFetchingResponse<T>{
   error: string;
   loading: boolean;
 }
 
-/*
- * On the initial render, we always return { error: null, loading: false }. If there is server-rendered data,
- * it will display. Otherwise, I assume that no data is desired since it should have been retrieved on the 
- * server for the initial load.
+/**
+ * @description useDataFetching
+ *   This hook is responsible for retrieving data on the browser in the case where either no data was 
+ *   retrieved on the server or where we are switching routes and need to fetch new data. While data
+ *   is being fetched, this hook returns { loading: true, error: null } which indicates to the client
+ *   of this method that some fallback should be rendered until loading === false. Once the axios
+ *   response comes back, the loading state is set to false and the fetched data is dispatched.
  * 
- * On subsequent renders, the following sequence occurs:
- *   1. setState({ error: null, loading: true })
- *   2. setState({ error: null, loading: false })
- *   3. dispatch({ data: value.data })
+ * @typeparam {T} The type describing the API response
  * 
- * The first setState is what triggers any interstitial behavior. The second setState undoes that. The 
- * dispatch method updates the application state with the response from axios.
+ * @param {string} dataSource The URI that gets passed directly to axios.get
+ * @param {T} initialState The initial data from the server, if there is any
+ * @param {Dispatch<GenericState>} dispatch Dipatch function that triggers the reducer to update the route's application state
+ *   
+ * @return {UseDataFetchingResponse} Response that indicates the state of the axios request: loading or error
 */
-export function useDataFetching<T>(dataSource: string, initialState: T, dispatch: Dispatch<GenericState>): UseDataFetchingResponse<T> {
+export function useDataFetching<T>(
+  dataSource: string, 
+  initialState: T, 
+  dispatch: Dispatch<GenericState>
+): UseDataFetchingResponse<T> {
   const didMount = useRef(false);
   const [state, setState] = useState({
     error: null,
@@ -31,10 +38,10 @@ export function useDataFetching<T>(dataSource: string, initialState: T, dispatch
     if (didMount.current || !initialState) {
       didMount.current = true;
       setState({ error: null, loading: true });
-      axios.get<T>(dataSource)
-        .then(value => {
+      axiosWrapper<T>(dataSource)
+        .then(data => {
           setState({ error: null, loading: false });
-          dispatch({ data: value.data });
+          dispatch({ data });
         })
         .catch(error => setState({ error: error.toString(), loading: false }));
     } else {
