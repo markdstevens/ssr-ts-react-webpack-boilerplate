@@ -2,6 +2,7 @@ import React, { createContext, useContext } from 'react';
 import { Route } from 'react-router-dom';
 import { routes } from 'routes';
 import { GenericState } from 'stores/base';
+import { ErrorBoundary } from 'components/ErrorBoundary';
 
 const initialRender = (initial: boolean): () => boolean => {
   let initialRender = initial;
@@ -27,7 +28,11 @@ export const App: React.FunctionComponent<GenericState> = ({ data }: GenericStat
         <Route
           key={path}
           {...{ path, exact }}
-          component={Page}
+          component={(props): JSX.Element => (
+            <ErrorBoundary>
+              <Page {...props} />
+            </ErrorBoundary>
+          )}
         />
       ))}
     </InitialContext.Provider>
