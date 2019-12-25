@@ -1,3 +1,3 @@
-import { Pokemon } from './Pokemon';
+import {Pokemon} from './Pokemon';
 
 export default Pokemon;

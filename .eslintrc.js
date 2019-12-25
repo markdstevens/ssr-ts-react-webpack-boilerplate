@@ -2,7 +2,8 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   extends: [
     'plugin:react/recommended',
-    'plugin:@typescript-eslint/recommended'
+    'plugin:@typescript-eslint/recommended',
+    'google'
   ],
   parserOptions: {
     ecmaVersion: 2018,

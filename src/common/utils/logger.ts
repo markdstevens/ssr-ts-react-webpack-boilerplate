@@ -1,8 +1,8 @@
-import { Event } from 'utils';
+import {Event} from 'utils';
 
 /**
  * @description
- *   A basic logger that provides a consistent and single source of truth 
+ *   A basic logger that provides a consistent and single source of truth
  *   for logging errors, events, and regular messages. This object should
  *   always be used instead of console.*
  */
@@ -31,5 +31,5 @@ export const loggerUtils = {
       currentStr += `${nextKey}='${obj[nextKey]}' `;
       return currentStr;
     }, '').trim();
-  }
+  },
 };

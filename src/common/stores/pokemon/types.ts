@@ -1,6 +1,6 @@
-import { IState } from 'stores/base';
-import { PokemonApiResponse } from 'stores/pokemon/generated/pokemon-api-full';
-import { RouteComponentProps } from 'react-router-dom';
+import {IState} from 'stores/base';
+import {PokemonApiResponse} from 'stores/pokemon/generated/pokemon-api-full';
+import {RouteComponentProps} from 'react-router-dom';
 
 export type PokemonProps = RouteComponentProps<PokemonParams>;
 

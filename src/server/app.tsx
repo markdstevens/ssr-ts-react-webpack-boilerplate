@@ -1,32 +1,33 @@
 import React from 'react';
 import path from 'path';
 import express from 'express';
-import { renderToString } from 'react-dom/server';
-import { App } from 'components/App';
-import { StaticRouter, matchPath } from 'react-router-dom';
-import { routes, Route } from 'routes';
-import { GenericState } from 'stores/base';
-import { ChunkExtractor } from '@loadable/server'
+import {renderToString} from 'react-dom/server';
+import {App} from 'components/App';
+import {StaticRouter, matchPath} from 'react-router-dom';
+import {routes, Route} from 'routes';
+import {GenericState} from 'stores/base';
+import {ChunkExtractor} from '@loadable/server';
 
 const statsFile = path.resolve('dist/loadable-stats.json');
 
 const server = express();
 server.use(express.static('dist'));
 
-server.get("*", (req, res, next) => {
-  const extractor = new ChunkExtractor({ statsFile })
+server.get('*', (req, res, next) => {
+  const extractor = new ChunkExtractor({statsFile});
 
-  const activeRoute: Route | null = routes.find(route => matchPath(req.url, route)) || null;
+  const activeRoute: Route | null = routes.find((route) =>
+    matchPath(req.url, route)) || null;
 
-  const promise: Promise<GenericState | void> = activeRoute?.fetchInitialData
-    ? activeRoute.fetchInitialData(req)
-    : Promise.resolve();
+  const promise: Promise<GenericState | void> = activeRoute?.fetchInitialData ?
+    activeRoute.fetchInitialData(req) :
+    Promise.resolve();
 
   promise.then((data: GenericState | void) => {
     const tsx = extractor.collectChunks(
-      <StaticRouter location={req.url}>
-        <App data={data}/>
-      </StaticRouter>
+        <StaticRouter location={req.url}>
+          <App data={data}/>
+        </StaticRouter>,
     );
 
     const html = renderToString(tsx);
@@ -48,7 +49,7 @@ server.get("*", (req, res, next) => {
         ${scriptTags}
       </html>
     `);
-  }).catch(next)
+  }).catch(next);
 });
 
 server.listen(3000, () => console.log('App listening on port 3000!'));
