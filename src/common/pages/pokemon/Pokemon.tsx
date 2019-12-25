@@ -1,14 +1,16 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { PokemonState, PokemonProps, store } from 'stores/pokemon';
-import { Ability } from 'stores/pokemon/generated/pokemon-api-full';
-import { useDataFetching } from 'hooks/use-data-fetching';
-import { config } from 'config';
+import React, {FunctionComponent} from 'react';
+import {Link} from 'react-router-dom';
+import {PokemonState, PokemonProps, store} from 'stores/pokemon';
+import {Ability} from 'stores/pokemon/generated/pokemon-api-full';
+import {useDataFetching} from 'hooks/use-data-fetching';
+import {config} from 'config';
 
-export const Pokemon: React.FunctionComponent<PokemonProps> = (props: PokemonProps) => {
-  const apiURL = `${config.stores.pokemon.baseUrl}/${props.match.params.id}`;
+export const Pokemon: FunctionComponent<PokemonProps> = (
+    props: PokemonProps,
+) => {
+  const url = `${config.stores.pokemon.baseUrl}/${props.match.params.id}`;
   const [state, dispatch] = store.useCustomState();
-  const { loading, error } = useDataFetching<PokemonState>(apiURL, state, dispatch);
+  const {loading, error} = useDataFetching<PokemonState>(url, state, dispatch);
 
   if (loading || error) {
     return (
@@ -16,9 +18,12 @@ export const Pokemon: React.FunctionComponent<PokemonProps> = (props: PokemonPro
     );
   }
 
+  const abilityNames = state?.data?.abilities
+    ?.map((ability: Ability) => ability.ability.name);
+
   return (
     <>
-      {state?.data?.abilities?.map((ability: Ability) => ability.ability.name).map((name: string, key: number) => (
+      {abilityNames.map((name: string, key: number) => (
         <div key={key}>{name}</div>
       ))}
       <Link to="/pokemon/charizard">Charizard!</Link>
