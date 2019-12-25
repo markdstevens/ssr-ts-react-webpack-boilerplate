@@ -14,7 +14,6 @@ export async function fetchWrapper<T>(url: string): Promise<GenericState> {
   try {
     return { data: await axiosWrapper<T>(url) };
   } catch (e) {
-    console.log(e);
     return { data: null };
   }
 };

@@ -60,7 +60,7 @@ module.exports = (env: WebpackEnv): webpack.Configuration[] => {
     target: 'web',
     output: {
       filename: 'client.js',
-      chunkFilename: '[name].client.bundle.js',
+      chunkFilename: `[name].client.bundle.[chunkhash].js`,
     },
     plugins: [
       new webpack.DefinePlugin({ __BROWSER__: true })
@@ -73,7 +73,7 @@ module.exports = (env: WebpackEnv): webpack.Configuration[] => {
     externals: [nodeExternals()],
     output: {
       filename: 'server.js',
-      chunkFilename: '[name].server.bundle.js',
+      chunkFilename: `[name].server.bundle.[chunkhash].js`,
     },
     plugins: [
       new webpack.DefinePlugin({ __BROWSER__: false })

@@ -26,6 +26,8 @@ export async function axiosWrapper<T>(uri: string): Promise<T> {
         data: e.request.data,
         e
       }));
+    } else {
+      logger.error('unknown error while calling axios', e);
     }
     throw new Error(e);
   }

@@ -1,5 +1,6 @@
 export enum Event {
   AXIOS_REQUEST,
   AXIOS_RESPONSE,
-  AXIOS_ERROR
+  AXIOS_ERROR,
+  ERROR_BOUNDARY
 }
