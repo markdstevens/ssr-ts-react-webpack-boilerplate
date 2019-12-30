@@ -1,5 +1,5 @@
 import React, {createContext, useReducer, useContext} from 'react';
-import {Store, IProvider, Reducer} from 'stores/base';
+import {Store, RouteProvider, Reducer} from 'stores/base';
 
 /**
  * @description
@@ -18,7 +18,7 @@ export function initStore<T>(): Store<T> {
       reducer,
       initialState,
       children,
-    }: IProvider<T>): JSX.Element => (
+    }: RouteProvider<T>): JSX.Element => (
       <CustomContext.Provider value={ useReducer(reducer, initialState) }>
         {children}
       </CustomContext.Provider>

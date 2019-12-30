@@ -19,7 +19,7 @@ export const Pokemon: FunctionComponent<PokemonProps> = (
   }
 
   const abilityNames = state?.data?.abilities
-    ?.map((ability: Ability) => ability.ability.name);
+    ?.map((ability: Ability) => ability.ability.name) || [];
 
   return (
     <>

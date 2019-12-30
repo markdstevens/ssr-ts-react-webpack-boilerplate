@@ -1,0 +1,12 @@
+
+$paneColor: blue;
+$paneSpanColor: purple;
+
+.pane {
+  background-color: $paneColor;
+  max-width: 30rem;
+}
+
+.pane span {
+  color: $paneSpanColor;
+}

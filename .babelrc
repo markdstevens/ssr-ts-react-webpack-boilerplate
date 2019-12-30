@@ -1,16 +1,26 @@
 
 /**
  * Without the babel plugin, starting the server will yield this error:
- *   "Invariant Violation: loadable: SSR requires `@loadable/babel-plugin`"
+ * "Invariant Violation: loadable: SSR requires `@loadable/babel-plugin`"
  *
- * babel-plugin is needed in order to do server-side rendering with the loadable components
- * package.
+ * babel-plugin is needed in order to do server-side rendering with the 
+ * loadable components package.
  *
  * https://loadable-components.com/docs/babel-plugin/
 */
 
 {
+  "presets": [
+    [
+      "@babel/env",
+      {
+        "modules": false
+      }
+    ]
+  ],
   "plugins": [
-    "@loadable/babel-plugin"
+    "@loadable/babel-plugin",
+    "babel-plugin-syntax-dynamic-import",
+    "@babel/plugin-transform-runtime"
   ]
 }

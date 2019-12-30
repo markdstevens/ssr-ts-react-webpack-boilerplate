@@ -1,5 +1,5 @@
 import {GenericState} from 'stores/base';
-import {axiosWrapper} from 'utils';
+import {axiosWrapper} from 'utils/axiosWrapper';
 
 /**
  * @description

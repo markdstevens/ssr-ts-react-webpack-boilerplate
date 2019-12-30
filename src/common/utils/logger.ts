@@ -1,4 +1,4 @@
-import {Event} from 'utils';
+import {Event} from 'utils/event';
 
 /**
  * @description
