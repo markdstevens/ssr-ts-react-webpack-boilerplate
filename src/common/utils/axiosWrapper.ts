@@ -1,6 +1,7 @@
 import axios from 'axios';
 import url from 'url';
-import {logger, loggerUtils, Event} from 'utils';
+import {logger, loggerUtils} from 'utils/logger';
+import {Event} from 'utils/event';
 
 /**
  * @description
@@ -19,7 +20,10 @@ export async function axiosWrapper<T>(uri: string): Promise<T> {
     );
     const start = Date.now();
     const response = await axios.get<T>(uri);
-    logger.event(Event.AXIOS_RESPONSE, `duration=${Date.now() - start}`);
+    logger.event(
+        Event.AXIOS_RESPONSE,
+        `duration=${Date.now() - start} response=${response.status}`
+    );
     return response.data;
   } catch (e) {
     if (e.isAxiosError) {

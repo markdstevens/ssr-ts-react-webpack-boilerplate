@@ -1,12 +1,13 @@
-import React, {Component, ReactNode} from 'react';
-import {logger, Event} from 'utils';
+import React, {Component, FunctionComponent, ReactNode} from 'react';
+import {logger} from 'utils/logger';
+import {Event} from 'utils/event';
 
 interface ErrorBoundaryState {
   hasError: boolean;
 }
 
 interface ErrorBoundaryProps {
-  Fallback?: React.FunctionComponent;
+  Fallback?: FunctionComponent;
   children: ReactNode;
 }
 

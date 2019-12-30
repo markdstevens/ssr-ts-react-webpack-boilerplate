@@ -31,7 +31,6 @@ server.get('*', (req, res, next) => {
     );
 
     const html = renderToString(tsx);
-    const scriptTags = extractor.getScriptTags();
 
     res.send(`
       <!DOCTYPE html>
@@ -40,13 +39,15 @@ server.get('*', (req, res, next) => {
           <title>React TS App</title>
           <meta charset="utf-8" />
           <link rel="icon" href="data:," />
+          ${extractor.getLinkTags()}
+          ${extractor.getStyleTags()}
         </head>
         <body style="margin:0">
           <div id="app">${html}
           </div>
         </body>
         <script>window.__INITIAL_STATE__=${JSON.stringify(data)}</script>
-        ${scriptTags}
+        ${extractor.getScriptTags()}
       </html>
     `);
   }).catch(next);

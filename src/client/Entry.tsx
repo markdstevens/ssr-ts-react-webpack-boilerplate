@@ -4,6 +4,8 @@ import {BrowserRouter} from 'react-router-dom';
 import {App} from 'components/App';
 import {GenericState} from 'stores/base';
 
+import 'styles/pane.scss';
+
 declare global {
   interface Window {
     __INITIAL_STATE__: GenericState;

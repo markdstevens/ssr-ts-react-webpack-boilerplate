@@ -1,21 +1,21 @@
-import {Dispatch} from 'react';
+import {Dispatch, FunctionComponent, ReactNode} from 'react';
 
-export interface IState<T> {
+export interface State<T> {
   data?: T;
 }
 
-export type GenericState = IState<any>;
+export type GenericState = State<any>;
 export type Reducer<T> = [T, Dispatch<T>]
 export type ReducerFunc<T, R> = (previousState: T, action: R) => T
 
-export interface IProvider<T> {
+export interface RouteProvider<T> {
   reducer: ReducerFunc<T, T>;
   initialState: T;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export interface Store<T> {
-  CustomProvider: React.FunctionComponent<IProvider<T>>;
+  CustomProvider: FunctionComponent<RouteProvider<T>>;
   useCustomState: () => Reducer<T>;
   reducer: ReducerFunc<T, T>;
 }
