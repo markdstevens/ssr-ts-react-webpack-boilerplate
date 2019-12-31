@@ -58,7 +58,6 @@ devDependencies:
   typed-scss-modules: 1.0.1_node-sass@4.13.0
   typescript: 3.7.4
   typescript-plugin-css-modules: 2.1.2_typescript@3.7.4
-  uglifyjs-webpack-plugin: 2.2.0_webpack@4.41.5
   webpack: 4.41.5_webpack@4.41.5
   webpack-bundle-analyzer: 3.6.0
   webpack-cli: 3.3.10_webpack@4.41.5
@@ -7922,10 +7921,6 @@ packages:
       node: '>= 0.8.0'
     resolution:
       integrity: sha512-BsVKsiGcQMFwT8UxypobUKyv7irCNRHk1T0G680vk88yf6LBByGcZJOTJCrTP2xVN6yI+XjPJcNuE3V4fT9sAg==
-  /serialize-javascript/1.9.1:
-    dev: true
-    resolution:
-      integrity: sha512-0Vb/54WJ6k5v8sSWN09S0ora+Hnr+cX40r9F170nT+mSkaxltoE/7R3OrIdBSUv1OoiobH1QoWQbCnAO+e8J1A==
   /serialize-javascript/2.1.2:
     dev: true
     resolution:
@@ -8955,35 +8950,6 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-A25xv5XCtarLwXpcDNZzCGvW2D1S3/bACratYBx2sax8PefsFhlYmkQicKHvpYflFS8if4zne5zT5kpJ7pzuvw==
-  /uglify-js/3.7.3:
-    dependencies:
-      commander: 2.20.3
-      source-map: 0.6.1
-    dev: true
-    engines:
-      node: '>=0.8.0'
-    hasBin: true
-    resolution:
-      integrity: sha512-7tINm46/3puUA4hCkKYo4Xdts+JDaVC9ZPRcG8Xw9R4nhO/gZgUM3TENq8IF4Vatk8qCig4MzP/c8G4u2BkVQg==
-  /uglifyjs-webpack-plugin/2.2.0_webpack@4.41.5:
-    dependencies:
-      cacache: 12.0.3
-      find-cache-dir: 2.1.0
-      is-wsl: 1.1.0
-      schema-utils: 1.0.0
-      serialize-javascript: 1.9.1
-      source-map: 0.6.1
-      uglify-js: 3.7.3
-      webpack: 4.41.5_webpack@4.41.5
-      webpack-sources: 1.4.3
-      worker-farm: 1.7.0
-    dev: true
-    engines:
-      node: '>= 6.9.0'
-    peerDependencies:
-      webpack: ^4.0.0
-    resolution:
-      integrity: sha512-mHSkufBmBuJ+KHQhv5H0MXijtsoA1lynJt1lXOaotja8/I0pR4L9oGaPIZw+bQBOFittXZg9OC1sXSGO9D9ZYg==
   /undefsafe/2.0.2:
     dependencies:
       debug: 2.6.9
@@ -9690,7 +9656,6 @@ specifiers:
   typed-scss-modules: ^1.0.1
   typescript: ^3.7.4
   typescript-plugin-css-modules: ^2.1.2
-  uglifyjs-webpack-plugin: ^2.2.0
   webpack: ^4.41.5
   webpack-bundle-analyzer: ^3.6.0
   webpack-cli: ^3.3.10
