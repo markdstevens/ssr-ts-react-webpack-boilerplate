@@ -36,4 +36,4 @@ const Pokemon: FunctionComponent<PokemonProps> = (
 };
 Pokemon.displayName = 'Pokemon';
 
-export { Pokemon };
+export {Pokemon};
