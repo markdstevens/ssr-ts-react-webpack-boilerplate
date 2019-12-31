@@ -4,7 +4,6 @@
   "main": "./dist/server.js",
   "author": "Mark Stevens <mdstevens94@gmail.com>",
   "license": "MIT",
-  "sideEffects": false,
   "scripts": {
     "webpack:dev": "tsc --lib es6 webpack.config.ts && webpack --env.dev && rm webpack.config.js",
     "webpack": "tsc --lib es6 webpack.config.ts && webpack --env.prod && rm webpack.config.js",
@@ -17,8 +16,11 @@
     "start:dev": "pnpm run build:dev && npm-run-all -p watch nodemon"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-optional-chaining": "^7.7.5",
     "@babel/plugin-transform-runtime": "^7.7.6",
     "@babel/preset-env": "^7.7.7",
+    "@babel/preset-react": "^7.7.4",
+    "@babel/preset-typescript": "^7.7.7",
     "@loadable/webpack-plugin": "^5.7.1",
     "@types/express": "^4.17.2",
     "@types/loadable__component": "^5.10.0",

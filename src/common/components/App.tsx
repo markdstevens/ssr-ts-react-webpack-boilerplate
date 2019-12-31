@@ -17,25 +17,23 @@ const isInitialRender = initialRender(true);
 
 const InitialContext = createContext(null);
 export const useInitialData = (): GenericState | null => {
-  const data: GenericState = useContext(InitialContext);
+  const data: GenericState | null = useContext(InitialContext);
   return isInitialRender() ? data : null;
 };
 
-export const App: FunctionComponent<GenericState> = ({data}: GenericState) => {
-  return (
-    <InitialContext.Provider value={data}>
-      {routes.map(({path, exact, component: Page}) => (
-        <Route
-          key={path}
-          {...{path, exact}}
-          component={(props): JSX.Element => (
-            <ErrorBoundary>
-              <Page {...props} />
-            </ErrorBoundary>
-          )}
-        />
-      ))}
-    </InitialContext.Provider>
-  );
-};
+export const App: FunctionComponent<GenericState> = ({data}: GenericState) => (
+  <InitialContext.Provider value={data}>
+    {routes.map(({path, exact, component: Page}) => (
+      <Route
+        key={path}
+        {...{path, exact}}
+        component={(props: any): JSX.Element => (
+          <ErrorBoundary>
+            <Page {...props} />
+          </ErrorBoundary>
+        )}
+      />
+    ))}
+  </InitialContext.Provider>
+);
 App.displayName = 'App';

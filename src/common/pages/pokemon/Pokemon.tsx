@@ -5,10 +5,10 @@ import {Ability} from 'stores/pokemon/generated/pokemon-api-full';
 import {useDataFetching} from 'hooks/use-data-fetching';
 import {config} from 'config';
 
-export const Pokemon: FunctionComponent<PokemonProps> = (
-    props: PokemonProps,
+const Pokemon: FunctionComponent<PokemonProps> = (
+    {match}: PokemonProps
 ) => {
-  const url = `${config.stores.pokemon.baseUrl}/${props.match.params.id}`;
+  const url = `${config.stores.pokemon.baseUrl}/${match.params.id}`;
   const [state, dispatch] = store.useCustomState();
   const {loading, error} = useDataFetching<PokemonState>(url, state, dispatch);
 
@@ -35,3 +35,5 @@ export const Pokemon: FunctionComponent<PokemonProps> = (
   );
 };
 Pokemon.displayName = 'Pokemon';
+
+export {Pokemon};

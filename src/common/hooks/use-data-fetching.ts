@@ -3,7 +3,7 @@ import {GenericState} from 'stores/base';
 import {axiosWrapper} from 'utils/axiosWrapper';
 
 export interface UseDataFetchingResponse<T>{
-  error: string;
+  error: string | null;
   loading: boolean;
 }
 
