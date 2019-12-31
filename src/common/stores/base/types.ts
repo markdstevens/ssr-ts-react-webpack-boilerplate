@@ -1,7 +1,7 @@
 import {Dispatch, FunctionComponent, ReactNode} from 'react';
 
 export interface State<T> {
-  data?: T;
+  data?: T | null;
 }
 
 export type GenericState = State<any>;

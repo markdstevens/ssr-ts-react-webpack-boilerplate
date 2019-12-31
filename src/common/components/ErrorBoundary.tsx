@@ -22,14 +22,16 @@ interface ErrorInfo {
  * (which should be customized). If a 'fallback' prop is supplied, it will be
  * rendered.
  *
+ * See this SO for details on implementation: http://bit.ly/2u0KLzr
+ *
  * @example this will render the default UI:
  *   <ErrorBoundary>
-*      <ComponentThatFailsDuringRender />
+ *     <ComponentThatFailsDuringRender />
  *   </ErrorBoundary>
  *
  * @example this will render a supplied fallback UI:
  *   <ErrorBoundary fallback={MyFallbackComponent}>
-*      <ComponentThatFailsDuringRender />
+ *     <ComponentThatFailsDuringRender />
  *   </ErrorBoundary>
  */
 class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
@@ -46,7 +48,8 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
 
   /**
    * @return {ErrorBoundaryState} The new state which will cause this
-   * component to re-render and to show a fallback UI.
+   * component to re-render and to show a fallback UI. This will catch any
+   * error from a decendent component.
    */
   static getDerivedStateFromError(): ErrorBoundaryState {
     return {hasError: true};
@@ -54,7 +57,8 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
 
   /**
    * @description A callback method that logs all errors received in the
-   * ErrorBoundary to the application logger.
+   * ErrorBoundary to the application logger. It is meant to perform side
+   * effects, hence the error logging. Called *after* render phase.
    *
    * @param {Error} error The actual JS error that caused the runtime exception
    * @param {ErrorInfo} errorInfo contains the stack trace
