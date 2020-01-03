@@ -8,7 +8,7 @@
     "webpack:dev": "webpack --env.dev",
     "webpack": "webpack --env.prod",
     "lint": "tsc --noEmit && eslint '*/**/*.{js,ts,tsx}' --quiet --fix && stylelint 'src/**/*.scss' --fix",
-    "tsm": "tsm src/**/*module.scss",
+    "tsm": "tsm src/**/*.module.scss",
     "build": "rimraf dist && pnpm run webpack",
     "start": "pnpm run build && node dist/server.js",
     "build:dev": "rimraf dist && pnpm run tsm && pnpm run webpack:dev",

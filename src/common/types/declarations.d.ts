@@ -9,6 +9,6 @@ declare module '*.png' {
 }
 
 declare module '*.jpg' {
-  const value: string;
-  export = value;
+  const src: string;
+  export default src;
 }
