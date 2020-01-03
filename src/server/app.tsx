@@ -7,10 +7,14 @@ import {StaticRouter, matchPath} from 'react-router-dom';
 import {routes, Route} from 'routes';
 import {GenericState} from 'stores/base';
 import {ChunkExtractor} from '@loadable/server';
+import {logger} from 'utils/logger';
+import {Event} from 'utils/event';
 
 const statsFile = path.resolve('dist/loadable-stats.json');
 
 const server = express();
+server.set('views', 'src/public');
+server.set('view engine', 'ejs');
 server.use(express.static('dist'));
 
 server.get('*', (req, res, next) => {
@@ -19,38 +23,44 @@ server.get('*', (req, res, next) => {
   const activeRoute: Route | null = routes.find((route) =>
     matchPath(req.url, route)) || null;
 
+  if (activeRoute?.name === '404') {
+    logger.event(
+        Event.NO_ROUTE_FOUND,
+        `error='no route found that matches ${req.url}'`
+    );
+  }
+
   const promise: Promise<GenericState | void> = activeRoute?.fetchInitialData ?
     activeRoute.fetchInitialData(req) :
     Promise.resolve();
 
   promise.then((data: GenericState | void) => {
-    const tsx = extractor.collectChunks(
-        <StaticRouter location={req.url}>
-          <App data={data}/>
-        </StaticRouter>,
+    const html = renderToString(
+        extractor.collectChunks(
+            <StaticRouter location={req.url}>
+              <App data={data}/>
+            </StaticRouter>
+        )
     );
 
-    const html = renderToString(tsx);
+    const [linkTags, styleTags, scriptTags] = [
+      extractor.getScriptTags(),
+      extractor.getStyleTags(),
+      extractor.getScriptTags()
+    ];
 
-    res.send(`
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <title>React TS App</title>
-          <meta charset="utf-8" />
-          <link rel="icon" href="data:," />
-          ${extractor.getLinkTags()}
-          ${extractor.getStyleTags()}
-        </head>
-        <body style="margin:0">
-          <div id="app">${html}
-          </div>
-        </body>
-        <script>window.__INITIAL_STATE__=${JSON.stringify(data)}</script>
-        ${extractor.getScriptTags()}
-      </html>
-    `);
+    const initialDataScript = `
+      <script>window.__INITIAL_STATE__=${JSON.stringify(data)}</script>
+    `.trim();
+
+    res.render('index', {
+      title: 'React App',
+      scriptTags: initialDataScript + scriptTags,
+      linkTags,
+      styleTags,
+      html
+    });
   }).catch(next);
 });
 
-server.listen(3000, () => console.log('App listening on port 3000!'));
+server.listen(3000, () => logger.info('App listening on port 3000!'));

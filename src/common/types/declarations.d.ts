@@ -3,5 +3,12 @@ declare module '*.module.scss' {
   export default classes;
 }
 
-declare const __DEV__: boolean;
-declare const __BROWSER__: boolean;
+declare module '*.png' {
+  const src: string;
+  export default src;
+}
+
+declare module '*.jpg' {
+  const src: string;
+  export default src;
+}

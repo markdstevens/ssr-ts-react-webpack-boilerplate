@@ -21,13 +21,14 @@ import {StatefulRoute} from 'routes';
  * that is being wrapped
  * @param {Store} routeStore The data store associated with the wrapped
  * component
+ * @param {string} profilerId A unique ID to be identify the wrapped component
  *
  * @return {StatefulRoute} A HOC component providing initial state data to the
  * wrapped component and its decendents.
  */
 export function withStatefulRoute<T, R>(
     WrappedComponent: LoadableComponent<RouteComponentProps<R>>,
-    routeStore: Store<T>,
+    routeStore: Store<T>
 ): StatefulRoute<R> {
   const Wrapper = (props: RouteComponentProps<R>): JSX.Element => (
     <routeStore.CustomProvider

@@ -13,7 +13,8 @@
     }
   },
   "plugins": [
-    "react-hooks"
+    "react-hooks",
+    "import"
   ],
   "rules": {
     // react rules
@@ -29,6 +30,7 @@
     "comma-dangle": "off"
   },
   "settings": {
+    "import/resolver": "webpack",
     "react": {
       "version": "detect"
     }
