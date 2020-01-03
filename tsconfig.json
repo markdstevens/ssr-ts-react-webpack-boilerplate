@@ -23,14 +23,14 @@
       "stores/*": ["common/stores/*" ],
       "routes": [ "common/routes/index.ts" ],
       "utils/*": [ "common/utils/*" ],
-      "styles/*": [ "common/styles/*" ]
+      "styles/*": [ "common/styles/*" ],
+      "images/*": [ "common/images/*" ]
     },
     "typeRoots" : [
       "./src/common/types"
     ]
   },
   "include": [
-    "./src/**/*",
-    "declarations.d.ts"
+    "./src/**/*"
   ],
 }

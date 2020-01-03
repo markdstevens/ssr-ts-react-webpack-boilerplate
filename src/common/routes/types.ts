@@ -7,6 +7,7 @@ export type StatefulRoute<T = any> =
 export type StatelessRoute = LoadableComponent<any>;
 
 export interface Route {
+  name: string;
   path: string;
   exact: boolean;
   component: StatefulRoute | StatelessRoute;

@@ -1,8 +1,15 @@
-import React, {createContext, useContext, FunctionComponent} from 'react';
+import React, {
+  createContext,
+  useContext,
+  FunctionComponent,
+  Profiler,
+  StrictMode
+} from 'react';
 import {Route} from 'react-router-dom';
 import {routes} from 'routes';
 import {GenericState} from 'stores/base';
 import {ErrorBoundary} from 'components/ErrorBoundary';
+import {logger} from 'utils/logger';
 
 const initialRender = (initial: boolean): () => boolean => {
   let initialRender = initial;
@@ -22,18 +29,29 @@ export const useInitialData = (): GenericState | null => {
 };
 
 export const App: FunctionComponent<GenericState> = ({data}: GenericState) => (
-  <InitialContext.Provider value={data}>
-    {routes.map(({path, exact, component: Page}) => (
-      <Route
-        key={path}
-        {...{path, exact}}
-        component={(props: any): JSX.Element => (
-          <ErrorBoundary>
-            <Page {...props} />
-          </ErrorBoundary>
-        )}
-      />
-    ))}
-  </InitialContext.Provider>
+  /**
+   * https://reactjs.org/docs/strict-mode.html
+   */
+  <StrictMode>
+    <main>
+      <InitialContext.Provider value={data}>
+        {routes.map(({path, exact, component: Page, name}) => (
+          <Route
+            key={path}
+            path={path}
+            exact={exact}
+            component={(props: any): JSX.Element => (
+              <ErrorBoundary>
+                <Profiler id={name} onRender={logger.profile}>
+                  <Page {...props} />
+                </Profiler>
+              </ErrorBoundary>
+            )}
+          />
+        ))}
+      </InitialContext.Provider>
+    </main>
+  </StrictMode>
 );
+
 App.displayName = 'App';

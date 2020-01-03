@@ -1,21 +1,5 @@
-$listStyleType: armenian;
-
-.hello {
-  color: 'red';
-}
-
-.list {
-  .hello {
-    color: 'green';
+.home {
+  img {
+    width: 15em;
   }
-
-  margin-left: 20rem;
-}
-
-.list-item {
-  list-style-type: $listStyleType;
-}
-
-.another-class {
-  color: red;
 }

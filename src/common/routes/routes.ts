@@ -25,16 +25,25 @@ import loadable from '@loadable/component';
  */
 export const routes: Route[] = [
   {
+    name: 'home',
     path: '/',
     exact: true,
     component: loadable(() => import('../pages/home')),
   },
   {
+    name: 'pokemon',
     path: '/pokemon/:id',
     exact: true,
     component: withStatefulRoute<PokemonState, PokemonParams>(
-        loadable(() => import('../pages/pokemon')), store,
+        loadable(() => import('../pages/pokemon')),
+        store
     ),
     fetchInitialData: pokemonFetch,
   },
+  {
+    name: '404',
+    path: '*',
+    exact: false,
+    component: loadable(() => import('../pages/404'))
+  }
 ];

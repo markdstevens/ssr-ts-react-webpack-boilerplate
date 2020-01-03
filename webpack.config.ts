@@ -6,8 +6,10 @@ import * as MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import * as OptimizeCssAssetsPlugin from 'optimize-css-assets-webpack-plugin';
 import * as LoadablePlugin from '@loadable/webpack-plugin';
 import * as TerserPlugin from 'terser-webpack-plugin';
-import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+// import {BundleAnalyzerPlugin} from 'webpack-bundle-analyzer';
 import {TsconfigPathsPlugin} from 'tsconfig-paths-webpack-plugin';
+import * as WorkboxPlugin from 'workbox-webpack-plugin';
+import * as CopyWebpackPlugin from 'copy-webpack-plugin';
 
 interface WebpackEnv {
   dev?: boolean;
@@ -31,6 +33,10 @@ module.exports = (env: WebpackEnv): webpack.Configuration[] => {
     },
     module: {
       rules: [
+        {
+          test: /\.(png|jpg|gif)$/i,
+          use: ['url-loader']
+        },
         {
           test: /\.tsx?$/,
           exclude: /node_modules/,
@@ -107,11 +113,11 @@ module.exports = (env: WebpackEnv): webpack.Configuration[] => {
      * webpack creates. During minification, a process known as tree-shaking
      * will occur that will "shake off" all of the unused code in libraries
      * and in application code, thus making bundles much smaller.
-     * 
+     *
      * By settings "warnings: true", terser will output all the times it was
      * able to drop unused functions, thus tangibly recording the effects of
      * tree shaking.
-     */ 
+     */
     baseConfig.optimization.minimizer.push(new TerserPlugin({
       terserOptions: {
         warnings: true
@@ -128,8 +134,35 @@ module.exports = (env: WebpackEnv): webpack.Configuration[] => {
     },
     plugins: [
       new webpack.DefinePlugin({__BROWSER__: true}),
-      // isDev ? new BundleAnalyzerPlugin() : null
-    ].filter(plugin => plugin)
+      new WorkboxPlugin.InjectManifest({
+        /**
+         * location of service worker file
+         */
+        swSrc: 'src/public/service-worker.js',
+        /**
+         * destination file. This has to be specified so that the file can be
+         * transpiled from ts --> js
+         */
+        swDest: 'service-worker.js',
+        /**
+         * All JS and CSS files in the 'dist' directory will be cached by the
+         * service worker in the client's browser on initial page load
+         */
+        include: [/\.js$/, /\.css$/],
+        /**
+         * why?
+         */
+        templatedUrls: {
+          '/': new Date().toString(),
+        },
+      }),
+      new CopyWebpackPlugin([
+        {from: 'src/public/index.ejs'},
+        {from: 'src/public/manifest.json'},
+        {from: 'src/public/penguin.png'}
+      ])
+      // new BundleAnalyzerPlugin()
+    ]
   });
 
   if (isDev) {

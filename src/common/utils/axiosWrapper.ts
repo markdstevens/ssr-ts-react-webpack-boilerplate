@@ -22,17 +22,17 @@ export async function axiosWrapper<T>(uri: string): Promise<T> {
     const response = await axios.get<T>(uri);
     logger.event(
         Event.AXIOS_RESPONSE,
-        `duration=${Date.now() - start} response=${response.status}`
+        `duration=${Date.now() - start} response=${response?.status}`
     );
     return response.data;
   } catch (e) {
     if (e.isAxiosError) {
       logger.event(Event.AXIOS_ERROR, loggerUtils.convertToLogString({
-        statusCode: e.response.status,
-        statusText: e.response.statusText,
-        method: e.config.method,
-        url: e.config.url,
-        data: e.request.data,
+        statusCode: e?.response?.status,
+        statusText: e?.response?.Text,
+        method: e?.config?.method,
+        url: e?.config?.url,
+        data: e?.request?.data,
         e,
       }));
     } else {

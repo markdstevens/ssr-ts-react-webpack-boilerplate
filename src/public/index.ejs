@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title><%= title %></title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#317EFB"/>
+    <link rel="icon" href="data:," />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="apple-touch-icon" href="/penguin.png">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+    <%- linkTags %>
+    <%- styleTags %>
+  </head>
+  <body>
+    <div id="app"><% html %></div>
+    <noscript>Uh oh! Your browser does not support JavaScript!</noscript>
+  </body>
+  <%- scriptTags %>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js');
+      });
+    }
+  </script>
+</html>
