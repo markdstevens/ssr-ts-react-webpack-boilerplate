@@ -1,10 +1,3 @@
-import {
-  fetchDelegate as pokemonFetch,
-  store,
-  PokemonState,
-  PokemonParams,
-} from 'stores/pokemon';
-import {withStatefulRoute} from 'components/hocs';
 import {Route} from 'routes';
 import loadable from '@loadable/component';
 
@@ -29,16 +22,6 @@ export const routes: Route[] = [
     path: '/',
     exact: true,
     component: loadable(() => import('../pages/home')),
-  },
-  {
-    name: 'pokemon',
-    path: '/pokemon/:id',
-    exact: true,
-    component: withStatefulRoute<PokemonState, PokemonParams>(
-        loadable(() => import('../pages/pokemon')),
-        store
-    ),
-    fetchInitialData: pokemonFetch,
   },
   {
     name: '404',
