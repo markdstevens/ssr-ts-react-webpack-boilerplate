@@ -42,8 +42,6 @@ export const routes: Route[] = [
   },
   {
     name: '404',
-    path: '*',
-    exact: false,
     component: loadable(() => import('../pages/404'))
   }
 ];

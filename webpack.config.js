@@ -1,32 +1,28 @@
-import * as path from 'path';
-import * as webpack from 'webpack';
-import * as nodeExternals from 'webpack-node-externals';
-import * as merge from 'webpack-merge';
-import * as MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import * as OptimizeCssAssetsPlugin from 'optimize-css-assets-webpack-plugin';
-import * as LoadablePlugin from '@loadable/webpack-plugin';
-import * as TerserPlugin from 'terser-webpack-plugin';
-// import {BundleAnalyzerPlugin} from 'webpack-bundle-analyzer';
-import {TsconfigPathsPlugin} from 'tsconfig-paths-webpack-plugin';
-import * as WorkboxPlugin from 'workbox-webpack-plugin';
-import * as CopyWebpackPlugin from 'copy-webpack-plugin';
+const path = require('path');
+const webpack = require('webpack');
+const nodeExternals = require('webpack-node-externals');
+const merge = require('webpack-merge');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
+const LoadablePlugin = require('@loadable/webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+const {TsconfigPathsPlugin} = require('tsconfig-paths-webpack-plugin');
+const WorkboxPlugin = require('workbox-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-interface WebpackEnv {
-  dev?: boolean;
-  prod?: boolean;
-}
+// const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer');
 
-module.exports = (env: WebpackEnv): webpack.Configuration[] => {
+module.exports = (env) => {
   const isDev = process.env.NODE_ENV === 'development' || env.dev;
 
-  const baseConfig: webpack.Configuration = {
+  const baseConfig = {
     mode: isDev ? 'development' : 'production',
     output: {
       path: path.resolve(__dirname, 'dist'),
       publicPath: '/'
     },
     resolve: {
-      extensions: ['.ts', '.tsx', '.js', '.json', '.css', '.scss'],
+      extensions: ['.ts', '.tsx', '.js', '.json', '.css', '.scss', '.png'],
 
       /* This makes webpack use the path aliases defined in .tsconfig.json */
       plugins: [new TsconfigPathsPlugin()]

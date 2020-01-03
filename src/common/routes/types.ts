@@ -8,8 +8,8 @@ export type StatelessRoute = LoadableComponent<any>;
 
 export interface Route {
   name: string;
-  path: string;
-  exact: boolean;
+  path?: string;
+  exact?: boolean;
   component: StatefulRoute | StatelessRoute;
   fetchInitialData?: (...args: any) => Promise<GenericState>;
 }

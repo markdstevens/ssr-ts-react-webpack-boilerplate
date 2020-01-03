@@ -23,7 +23,7 @@ server.get('*', (req, res, next) => {
   const activeRoute: Route | null = routes.find((route) =>
     matchPath(req.url, route)) || null;
 
-  if (activeRoute?.path === '*') {
+  if (activeRoute?.name === '404') {
     logger.event(
         Event.NO_ROUTE_FOUND,
         `error='no route found that matches ${req.url}'`
