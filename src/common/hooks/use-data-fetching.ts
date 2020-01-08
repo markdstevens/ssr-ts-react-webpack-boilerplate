@@ -23,6 +23,7 @@ export interface UseDataFetchingResponse<T>{
  * @param {T} initialState The initial data from the server, if there is any
  * @param {Dispatch<GenericState>} dispatch Dipatch function that triggers the
  * reducer to update the route's application state
+ * @param {boolean} overrideMemo
  *
  * @return {UseDataFetchingResponse} Response that indicates the state of the
  * axios request: loading or error
@@ -30,7 +31,7 @@ export interface UseDataFetchingResponse<T>{
 export function useDataFetching<T>(
     dataSource: string,
     initialState: T,
-    dispatch: Dispatch<GenericState>,
+    dispatch: Dispatch<GenericState>
 ): UseDataFetchingResponse<T> {
   const didMount = useRef(false);
   const [state, setState] = useState({
