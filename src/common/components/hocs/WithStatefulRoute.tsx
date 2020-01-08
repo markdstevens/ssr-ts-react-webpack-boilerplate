@@ -3,7 +3,7 @@ import {RouteComponentProps} from 'react-router-dom';
 import {Store} from 'stores/base';
 import {useInitialData} from 'components/App';
 import {LoadableComponent} from '@loadable/component';
-import {StatefulRoute} from 'routes';
+import {StatefulDynamicRoute, StatefulStaticRoute} from 'routes';
 
 /**
  * @description StatefulRoute
@@ -23,13 +23,13 @@ import {StatefulRoute} from 'routes';
  * component
  * @param {string} profilerId A unique ID to be identify the wrapped component
  *
- * @return {StatefulRoute} A HOC component providing initial state data to the
- * wrapped component and its decendents.
+ * @return {StatefulDynamicRoute} A HOC component providing initial state data
+ * to the wrapped component and its decendents.
  */
-export function withStatefulRoute<T, R>(
+export function withStatefulDynamicRoute<T, R = any>(
     WrappedComponent: LoadableComponent<RouteComponentProps<R>>,
     routeStore: Store<T>
-): StatefulRoute<R> {
+): StatefulDynamicRoute<R> {
   const Wrapper = (props: RouteComponentProps<R>): JSX.Element => (
     <routeStore.CustomProvider
       initialState={useInitialData() as T}
@@ -41,3 +41,39 @@ export function withStatefulRoute<T, R>(
   Wrapper.displayName = 'StatefulRoute';
   return Wrapper;
 };
+
+/**
+ * @description StatefulRoute
+ *   Higher order component that wraps a route with a provider which provides
+ *   the application state for that route during the initial render of the
+ *   component. As a result, this HOC is only useful during the initial render
+ *   for the wrapped component.
+ *
+ * @typeparam {T} The type of the data being set in the provider - usually the
+ * top level API type
+ *
+ * @param {LoadableComponent} WrappedComponent The top level route component
+ * that is being wrapped
+ * @param {Store} routeStore The data store associated with the wrapped
+ * component
+ * @param {string} profilerId A unique ID to be identify the wrapped component
+ *
+ * @return {StatefulStaticRoute} A HOC component providing initial state data
+ * to the wrapped component and its decendents.
+ */
+export function withStatefulStaticRoute<T>(
+    WrappedComponent: LoadableComponent<void>,
+    routeStore: Store<T>
+): StatefulStaticRoute<T> {
+  const Wrapper = (props: any): JSX.Element => (
+    <routeStore.CustomProvider
+      initialState={useInitialData() as T}
+      reducer={routeStore.reducer}
+    >
+      <WrappedComponent {...props }/>
+    </routeStore.CustomProvider>
+  );
+  Wrapper.displayName = 'StatefulRoute';
+  return Wrapper;
+};
+

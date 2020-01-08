@@ -1,5 +1,5 @@
 import {useState, useEffect, useRef, Dispatch} from 'react';
-import {GenericState} from 'stores/base';
+import {GenericState, State} from 'stores/base';
 import {axiosWrapper} from 'utils/axiosWrapper';
 
 export interface UseDataFetchingResponse<T>{
@@ -23,6 +23,7 @@ export interface UseDataFetchingResponse<T>{
  * @param {T} initialState The initial data from the server, if there is any
  * @param {Dispatch<GenericState>} dispatch Dipatch function that triggers the
  * reducer to update the route's application state
+ * @param {boolean} overrideMemo
  *
  * @return {UseDataFetchingResponse} Response that indicates the state of the
  * axios request: loading or error
@@ -30,7 +31,7 @@ export interface UseDataFetchingResponse<T>{
 export function useDataFetching<T>(
     dataSource: string,
     initialState: T,
-    dispatch: Dispatch<GenericState>,
+    dispatch: Dispatch<GenericState>
 ): UseDataFetchingResponse<T> {
   const didMount = useRef(false);
   const [state, setState] = useState({

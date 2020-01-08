@@ -1,5 +1,4 @@
 import {Route} from 'routes';
-import loadable from '@loadable/component';
 
 /**
  * @description
@@ -15,16 +14,8 @@ import loadable from '@loadable/component';
  *   code into a separate chunk. The 'component' field can optionally be wrapped
  *   in the 'WithStatefulRoute' HOC which should only be used for routes that
  *   need initial data to be fetched on the server.
+ *
+ *   DONT MANUALLY ALTER THIS LIST UNLESS YOU KNOW WHAT YOU'RE DOING
  */
 export const routes: Route[] = [
-  {
-    name: 'home',
-    path: '/',
-    exact: true,
-    component: loadable(() => import('../pages/home')),
-  },
-  {
-    name: '404',
-    component: loadable(() => import('../pages/404'))
-  }
 ];
