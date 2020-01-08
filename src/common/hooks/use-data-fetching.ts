@@ -1,5 +1,5 @@
 import {useState, useEffect, useRef, Dispatch} from 'react';
-import {GenericState, State} from 'stores/base';
+import {GenericState} from 'stores/base';
 import {axiosWrapper} from 'utils/axiosWrapper';
 
 export interface UseDataFetchingResponse<T>{
