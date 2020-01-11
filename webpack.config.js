@@ -21,6 +21,7 @@ module.exports = (env = {}) => {
 
   const baseConfig = {
     mode: isDev ? 'development' : 'production',
+    watch: isDev && !env.nostart,
     output: {
       path: path.resolve(__dirname, 'dist'),
       publicPath: '/'
@@ -137,7 +138,6 @@ module.exports = (env = {}) => {
       filename: 'client.js',
       chunkFilename: isDev ? `[name].client.bundle.js` : `[name].client.bundle.[chunkhash].js`,
     },
-    watch: isDev,
     plugins: [
       new webpack.DefinePlugin({__BROWSER__: true}),
       new LoadablePlugin()
@@ -163,7 +163,6 @@ module.exports = (env = {}) => {
     entry: './src/server/app.tsx',
     target: 'node',
     externals: [nodeExternals()],
-    watch: isDev,
     output: {
       filename: 'server.js',
       chunkFilename: isDev ? `[name].server.bundle.js` : `[name].server.bundle.[chunkhash].js`,
@@ -182,7 +181,9 @@ module.exports = (env = {}) => {
   }
 
   if (isDev) {
-    serverConfig.plugins.push(new NodemonPlugin());
+    if (!env.nostart) {
+      serverConfig.plugins.push(new NodemonPlugin());
+    }
     serverConfig.plugins.push(new CleanWebpackPlugin({
       cleanOnceBeforeBuildPatterns: ['!client*.js'],
       cleanAfterEveryBuildPatterns: ['!client*.js'],

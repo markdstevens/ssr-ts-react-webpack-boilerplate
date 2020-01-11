@@ -1,6 +1,5 @@
 import {Route} from 'routes';
 import {homeRoute} from './home';
-import loadable from '@loadable/component'
 
 /**
  * @description
@@ -20,10 +19,5 @@ import loadable from '@loadable/component'
  *   DONT MANUALLY ALTER THIS LIST UNLESS YOU KNOW WHAT YOU'RE DOING
  */
 export const routes: Route[] = [
-  {
-    name: 'home',
-    path: '/',
-    exact: true,
-    component: loadable(() => import('../pages/home'))
-  },
+  homeRoute
 ];
