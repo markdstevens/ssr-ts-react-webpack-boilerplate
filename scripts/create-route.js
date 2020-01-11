@@ -119,6 +119,10 @@ const askQuestions = async () => {
     exact: name
   };
 
+  if (!fs.existsSync(config.pagesDir)) {
+    actions.push(() => fs.mkdirSync(config.pagesDir));
+  }
+
   const newStoreDirPath = `${config.storesDir}/${answers.name.lower}`;
   const newPagesDirPath = `${config.pagesDir}/${answers.name.camel}`;
   const newRouteDirPath = `${config.routesDir}/${answers.name.camel}`;
@@ -152,27 +156,26 @@ const askQuestions = async () => {
     answers.apiURLWithPathParams = await questionWithRetry(`Fully qualified API URL with substituted path params: `, commonValidator);
 
     actions.push(() => updateBaseConfig(config, answers));
-
-    fs.mkdirSync(newStoreDirPath);
-    fs.mkdirSync(`${newStoreDirPath}/generated`);
-    fs.writeFileSync(`${newStoreDirPath}/store.ts`, storeTemplate(answers.name, answers.name.lower, answers.apiURLWithPathParams));
-    fs.writeFileSync(`${newStoreDirPath}/index.ts`, `export * from './types';\nexport * from './store';\n`);
-    fs.writeFileSync(`${newStoreDirPath}/generated/${answers.name.camel}ApiResponse.d.ts`, answers.types);
+    actions.push(() => fs.mkdirSync(newStoreDirPath));
+    actions.push(() => fs.mkdirSync(`${newStoreDirPath}/generated`));
+    actions.push(() => fs.writeFileSync(`${newStoreDirPath}/store.ts`, storeTemplate(answers.name, answers.name.lower, answers.apiURLWithPathParams)));
+    actions.push(() => fs.writeFileSync(`${newStoreDirPath}/index.ts`, `export * from './types';\nexport * from './store';\n`));
+    actions.push(() => fs.writeFileSync(`${newStoreDirPath}/generated/${answers.name.camel}ApiResponse.d.ts`, answers.types));
 
     const keys = [];
     pathToRegexp(answers.path, keys);
 
-    fs.writeFileSync(`${newStoreDirPath}/types.ts`, typesTemplate(answers.name, keys));
+    actions.push(() => fs.writeFileSync(`${newStoreDirPath}/types.ts`, typesTemplate(answers.name, keys)));
     if (!keys.length) {
-      fs.writeFileSync(`${newPagesDirPath}.tsx`, dataFetchingPageNoPathParamsTemplate(answers.name));
-      fs.writeFileSync(`${newRouteDirPath}.ts`, staticStatefulRouteTemplate(answers));
+      actions.push(() => fs.writeFileSync(`${newPagesDirPath}.tsx`, dataFetchingPageNoPathParamsTemplate(answers.name)));
+      actions.push(() => fs.writeFileSync(`${newRouteDirPath}.ts`, staticStatefulRouteTemplate(answers)));
     } else {
-      fs.writeFileSync(`${newPagesDirPath}.tsx`, dataFetchingWithPathParamsTemplate(answers.name, keys));
-      fs.writeFileSync(`${newRouteDirPath}.ts`, dynamicStatefulRouteTemplate(answers));
+      actions.push(() => fs.writeFileSync(`${newPagesDirPath}.tsx`, dataFetchingWithPathParamsTemplate(answers.name, keys)));
+      actions.push(() => fs.writeFileSync(`${newRouteDirPath}.ts`, dynamicStatefulRouteTemplate(answers)));
     }
   } else {
-    fs.writeFileSync(`${newPagesDirPath}.tsx`, basicPageTemplate(answers.name));
-    fs.writeFileSync(`${newRouteDirPath}.ts`, simpleRouteTemplate(answers));
+    actions.push(() => fs.writeFileSync(`${newPagesDirPath}.tsx`, basicPageTemplate(answers.name)));
+    actions.push(() => fs.writeFileSync(`${newRouteDirPath}.ts`, simpleRouteTemplate(answers)));
   }
   actions.forEach(action => action());
 }

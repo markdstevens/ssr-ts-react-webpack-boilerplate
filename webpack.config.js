@@ -9,14 +9,19 @@ const TerserPlugin = require('terser-webpack-plugin');
 const {TsconfigPathsPlugin} = require('tsconfig-paths-webpack-plugin');
 const WorkboxPlugin = require('workbox-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const {GenerateSW} = require('workbox-webpack-plugin');
+const NodemonPlugin = require('nodemon-webpack-plugin');
+const {CleanWebpackPlugin} = require('clean-webpack-plugin');
+const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer');
 
-// const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer');
-
-module.exports = (env) => {
-  const isDev = process.env.NODE_ENV === 'development' || env.dev;
+module.exports = (env = {}) => {
+  const isDev = process.env.NODE_ENV === 'development' 
+    || (env && env.dev) 
+    || false;
 
   const baseConfig = {
     mode: isDev ? 'development' : 'production',
+    watch: isDev && !env.nostart,
     output: {
       path: path.resolve(__dirname, 'dist'),
       publicPath: '/'
@@ -91,14 +96,19 @@ module.exports = (env) => {
       }
     },
     plugins: [
-      new LoadablePlugin(),
       new webpack.DefinePlugin({
         __DEV__: isDev
       }),
       new MiniCssExtractPlugin({
-        filename: '[name]-[contenthash].css'
-      })
-    ]
+        filename: isDev ? '[name].css' : '[name]-[contenthash].css'
+      }),
+      new CopyWebpackPlugin([
+        {from: 'src/public/index.ejs'},
+        {from: 'src/public/manifest.json'},
+        {from: 'src/public/penguin.png'}
+      ])
+    ],
+    stats: isDev ? 'errors-warnings' : 'errors-only'
   };
 
   if (!isDev) {
@@ -126,43 +136,27 @@ module.exports = (env) => {
     target: 'web',
     output: {
       filename: 'client.js',
-      chunkFilename: `[name].client.bundle.[chunkhash].js`,
+      chunkFilename: isDev ? `[name].client.bundle.js` : `[name].client.bundle.[chunkhash].js`,
     },
     plugins: [
       new webpack.DefinePlugin({__BROWSER__: true}),
-      new WorkboxPlugin.InjectManifest({
-        /**
-         * location of service worker file
-         */
-        swSrc: 'src/public/service-worker.js',
-        /**
-         * destination file. This has to be specified so that the file can be
-         * transpiled from ts --> js
-         */
-        swDest: 'service-worker.js',
-        /**
-         * All JS and CSS files in the 'dist' directory will be cached by the
-         * service worker in the client's browser on initial page load
-         */
-        include: [/\.js$/, /\.css$/],
-        /**
-         * why?
-         */
-        templatedUrls: {
-          '/': new Date().toString(),
-        },
-      }),
-      new CopyWebpackPlugin([
-        {from: 'src/public/index.ejs'},
-        {from: 'src/public/manifest.json'},
-        {from: 'src/public/penguin.png'}
-      ])
-      // new BundleAnalyzerPlugin()
+      new LoadablePlugin()
     ]
   });
 
+  if (!isDev) {
+    clientConfig.plugins.push(new GenerateSW({
+      navigateFallback: '/'
+    }));
+  }
+
   if (isDev) {
     clientConfig.devtool = 'cheap-module-eval-source-map';
+    clientConfig.plugins.push(new CleanWebpackPlugin({
+      cleanOnceBeforeBuildPatterns: ['!server*.js'],
+      cleanAfterEveryBuildPatterns: ['!server*.js'],
+      cleanStaleWebpackAssets: false
+    }));
   }
 
   const serverConfig = merge.smart(baseConfig, {
@@ -171,12 +165,31 @@ module.exports = (env) => {
     externals: [nodeExternals()],
     output: {
       filename: 'server.js',
-      chunkFilename: `[name].server.bundle.[chunkhash].js`,
+      chunkFilename: isDev ? `[name].server.bundle.js` : `[name].server.bundle.[chunkhash].js`,
     },
     plugins: [
       new webpack.DefinePlugin({__BROWSER__: false})
     ]
   });
+
+  if (env.profileServer) {
+    serverConfig.plugins.push(new BundleAnalyzerPlugin());
+  }
+
+  if (env.profileClient) {
+    clientConfig.plugins.push(new BundleAnalyzerPlugin());
+  }
+
+  if (isDev) {
+    if (!env.nostart) {
+      serverConfig.plugins.push(new NodemonPlugin());
+    }
+    serverConfig.plugins.push(new CleanWebpackPlugin({
+      cleanOnceBeforeBuildPatterns: ['!client*.js'],
+      cleanAfterEveryBuildPatterns: ['!client*.js'],
+      cleanStaleWebpackAssets: false
+    }));
+  }
 
   return [clientConfig, serverConfig];
 };

@@ -3,7 +3,7 @@ const basicPageTemplate = (name) => (
 
 const ${name.pascal}: FunctionComponent<void> = () => (
   <h1>
-    {'It\\'s working!'}
+    It works!
   </h1>
 );
 ${name.pascal}.displayName = '${name.pascal}';

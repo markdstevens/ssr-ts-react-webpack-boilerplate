@@ -1,4 +1,5 @@
 import {Route} from 'routes';
+import {homeRoute} from './home';
 
 /**
  * @description
@@ -18,4 +19,5 @@ import {Route} from 'routes';
  *   DONT MANUALLY ALTER THIS LIST UNLESS YOU KNOW WHAT YOU'RE DOING
  */
 export const routes: Route[] = [
+  homeRoute
 ];
