@@ -13,15 +13,18 @@ const {GenerateSW} = require('workbox-webpack-plugin');
 const NodemonPlugin = require('nodemon-webpack-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer');
+const WebpackBundleSizeLimitPlugin = require('webpack-bundle-size-limit-plugin');
 
 module.exports = (env = {}) => {
   const isDev = process.env.NODE_ENV === 'development' 
     || (env && env.dev) 
     || false;
 
+  const isProfiling = env.profileClient || env.profileServer;
+
   const baseConfig = {
     mode: isDev ? 'development' : 'production',
-    watch: isDev && !env.nostart,
+    watch: isDev && !env.nostart && !isProfiling,
     output: {
       path: path.resolve(__dirname, 'dist'),
       publicPath: '/'
@@ -140,7 +143,12 @@ module.exports = (env = {}) => {
     },
     plugins: [
       new webpack.DefinePlugin({__BROWSER__: true}),
-      new LoadablePlugin()
+      new LoadablePlugin(),
+      new WebpackBundleSizeLimitPlugin({
+        config: path.join(__dirname, 'bundle-size-client.conf.js'),
+        extensions: ['.css', '.js'],
+        enforceForAllBundles: true
+      })
     ]
   });
 
@@ -168,7 +176,12 @@ module.exports = (env = {}) => {
       chunkFilename: isDev ? `[name].server.bundle.js` : `[name].server.bundle.[chunkhash].js`,
     },
     plugins: [
-      new webpack.DefinePlugin({__BROWSER__: false})
+      new webpack.DefinePlugin({__BROWSER__: false}),
+      new WebpackBundleSizeLimitPlugin({
+        config: path.join(__dirname, 'bundle-size-server.conf.js'),
+        extensions: ['.js', '.json'],
+        enforceForAllBundles: true
+      })
     ]
   });
 
@@ -181,7 +194,7 @@ module.exports = (env = {}) => {
   }
 
   if (isDev) {
-    if (!env.nostart) {
+    if (!env.nostart && !isProfiling) {
       serverConfig.plugins.push(new NodemonPlugin());
     }
     serverConfig.plugins.push(new CleanWebpackPlugin({
