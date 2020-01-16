@@ -1,4 +1,8 @@
-const storeTemplate = (name, pathname, apiURLWithPathParams) => `import {Request} from 'express';
+const storeTemplate = (
+  name,
+  pathname,
+  apiURLWithPathParams
+) => `import {Request} from 'express';
 import {config} from 'config';
 import {initStore, fetchWrapper, GenericState} from 'stores/base';
 import {${name.pascal}State} from 'stores/${pathname}';
