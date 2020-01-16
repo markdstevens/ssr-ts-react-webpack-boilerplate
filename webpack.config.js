@@ -143,19 +143,21 @@ module.exports = (env = {}) => {
     },
     plugins: [
       new webpack.DefinePlugin({__BROWSER__: true}),
-      new LoadablePlugin(),
+      new LoadablePlugin()
+    ]
+  });
+
+  if (!isDev) {
+    clientConfig.plugins.push(...[
+      new GenerateSW({
+        navigateFallback: '/'
+      }),
       new WebpackBundleSizeLimitPlugin({
         config: path.join(__dirname, 'bundle-size-client.conf.js'),
         extensions: ['.css', '.js'],
         enforceForAllBundles: true
       })
-    ]
-  });
-
-  if (!isDev) {
-    clientConfig.plugins.push(new GenerateSW({
-      navigateFallback: '/'
-    }));
+  ]);
   }
 
   if (isDev) {
@@ -177,11 +179,6 @@ module.exports = (env = {}) => {
     },
     plugins: [
       new webpack.DefinePlugin({__BROWSER__: false}),
-      new WebpackBundleSizeLimitPlugin({
-        config: path.join(__dirname, 'bundle-size-server.conf.js'),
-        extensions: ['.js', '.json'],
-        enforceForAllBundles: true
-      })
     ]
   });
 
@@ -195,12 +192,18 @@ module.exports = (env = {}) => {
 
   if (isDev) {
     if (!env.nostart && !isProfiling) {
-      serverConfig.plugins.push(new NodemonPlugin());
+      //serverConfig.plugins.push(new NodemonPlugin());
     }
     serverConfig.plugins.push(new CleanWebpackPlugin({
       cleanOnceBeforeBuildPatterns: ['!client*.js'],
       cleanAfterEveryBuildPatterns: ['!client*.js'],
       cleanStaleWebpackAssets: false
+    }));
+  } else {
+    serverConfig.plugins.push(new WebpackBundleSizeLimitPlugin({
+      config: path.join(__dirname, 'bundle-size-server.conf.js'),
+      extensions: ['.js', '.json'],
+      enforceForAllBundles: true
     }));
   }
 

@@ -1,5 +1,4 @@
-/* eslint-disable */
-const readline = require('readline-promise');
+#!/usr/bin/env node
 const fs = require('fs');
 const path = require('path');
 const pascalcase = require('pascalcase');
@@ -7,6 +6,10 @@ const camelcase = require('camelcase');
 const { pathToRegexp } = require("path-to-regexp");
 const { json2ts } = require('json-ts');
 const axios = require('axios');
+const inquirer = require('inquirer');
+const chalk = require('chalk');
+const clear = require('clear');
+const figlet = require('figlet');
 
 const {
   simpleRouteTemplate,
@@ -26,27 +29,6 @@ const config = {
   configDir: path.resolve(__dirname, '../src/config')
 };
 
-const rlp = readline.default.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-  terminal: true
-});
-
-const questionWithRetry = async (question, validate, augment = (val) => val) => {
-  let valid = false;
-  let answer;
-  while (!valid) {
-    answer = await rlp.questionAsync(question);
-    const errorMsg = validate(answer);
-    if (!errorMsg) {
-      valid = true;
-    } else {
-      console.log(errorMsg);
-    }
-  }
-  return augment(answer);
-};
-
 const commonValidator = (val, minLength = 2) => {
   if (!val) {
     return 'ERROR: input must not be blank';
@@ -54,18 +36,7 @@ const commonValidator = (val, minLength = 2) => {
   if (val.length < minLength) {
     return `ERROR: input must be at least ${minLength} characters`;
   }
-  return null;
-};
-
-const yesNoValidator = (val) => {
-  if (!val) {
-    return 'ERROR: input must not be blank';
-  }
-  let lowerCaseVal = val.toLowerCase();
-  if (!(lowerCaseVal === 'y' || lowerCaseVal === 'yes' || lowerCaseVal === 'n' || lowerCaseVal === 'no')) {
-    return 'ERROR: input must match one of [n, no, y, yes]';
-  }
-  return null;
+  return true;
 };
 
 const updateRoutesFile = (config, answers) => {
@@ -108,53 +79,72 @@ const updateBaseConfig = (config, answers) => {
 };
 
 const askQuestions = async () => {
-  const answers = {};
   const actions = [];
-  const name = await questionWithRetry('what is the name of the new route? ', commonValidator);
+  
+  let answers = await inquirer.prompt([
+    {
+      type: 'input',
+      name: 'name',
+      message: 'name your route',
+      validate: commonValidator
+    },
+    {
+      type: 'input',
+      name: 'path',
+      message: 'path (e.g. /todos/:id)',
+      validate: input => commonValidator(input, 1)
+    },
+    {
+      type: 'list',
+      name: 'poweredByApi',
+      message: 'Is this route powered by API data',
+      choices: ['yes', 'no']
+    }
+  ]);
 
+  // this modifies answers.name
   answers.name = {
-    pascal: pascalcase(name),
-    camel: camelcase(name),
-    lower: camelcase(name).toLowerCase(),
-    exact: name
+    pascal: pascalcase(answers.name),
+    camel: camelcase(answers.name),
+    lower: camelcase(answers.name).toLowerCase(),
+    exact: answers.name
   };
-
-  if (!fs.existsSync(config.pagesDir)) {
-    actions.push(() => fs.mkdirSync(config.pagesDir));
-  }
 
   const newStoreDirPath = `${config.storesDir}/${answers.name.lower}`;
   const newPagesDirPath = `${config.pagesDir}/${answers.name.camel}`;
   const newRouteDirPath = `${config.routesDir}/${answers.name.camel}`;
 
-  answers.path = await questionWithRetry('what is the new route\'s path (e.g. /todos/:id)? ', 
-    (val) => commonValidator(val, 1),
-    (route) => {
-      let str = route;
-      if (route !== '/' && route.endsWith('/')) str = str.substring(0, str.length - 1);
-      if (!route.startsWith('/')) str = `/${str}`;
-      return str;
-    });
+  // this modifies answers.path
+  if (answers.path !== '/' && answers.path.endsWith('/')) answers.path = answers.path.substring(0, str.length - 1);
+  if (!answers.path.startsWith('/')) answers.path = `/${answers.path}`;
 
-  answers.poweredByApi = await questionWithRetry('is this route powered by API data (y/n)? ', yesNoValidator, (val) => {
-    return val === 'y' || val === 'yes';
-  });
+  // this modifies answers.poweredByApi
+  answers.poweredByApi = answers.poweredByApi === 'yes';
 
   actions.push(() => updateRoutesFile(config, answers));
-
   if (answers.poweredByApi) {
-    [answers.apiURL, answers.types] = await questionWithRetry(`Fully qualified API URL: `, commonValidator, async (val) => {
-      val = val.endsWith('/') ? val.substring(0, str.length - 1) : val;
-      const exampleJSONResponse = await axios.get(val);
-      const types = json2ts(JSON.stringify(exampleJSONResponse.data), {
-        rootName: `${answers.name.pascal}ApiResponse`,
-        prefix: ''
-      });
-      return [val, types];
+    answers = Object.assign(answers, await inquirer.prompt([
+      {
+        type: 'input',
+        name: 'apiURL',
+        message: 'API url (e.g. http://localhost:8080/todos/1)',
+        validate: commonValidator
+      },
+      {
+        type: 'input',
+        name: 'apiURLWithPathParams',
+        message: 'API url structure (e.g. http://localhost:8080/todos/:id',
+        validate: commonValidator
+      }
+    ]));
+
+    const url = answers.apiURL.endsWith('/') ? answers.apiURL.substring(0, answers.apiURL.length - 1) : answers.apiURL;
+    const exampleJSONResponse = await axios.get(url);
+    answers.types = json2ts(JSON.stringify(exampleJSONResponse.data), {
+      rootName: `${answers.name.pascal}ApiResponse`,
+      prefix: ''
     });
-
-    answers.apiURLWithPathParams = await questionWithRetry(`Fully qualified API URL with substituted path params: `, commonValidator);
-
+    
     actions.push(() => updateBaseConfig(config, answers));
     actions.push(() => fs.mkdirSync(newStoreDirPath));
     actions.push(() => fs.mkdirSync(`${newStoreDirPath}/generated`));
@@ -165,6 +155,9 @@ const askQuestions = async () => {
     const keys = [];
     pathToRegexp(answers.path, keys);
 
+    if (!fs.existsSync(config.pagesDir)) {
+      actions.push(() => fs.mkdirSync(config.pagesDir));
+    }
     actions.push(() => fs.writeFileSync(`${newStoreDirPath}/types.ts`, typesTemplate(answers.name, keys)));
     if (!keys.length) {
       actions.push(() => fs.writeFileSync(`${newPagesDirPath}.tsx`, dataFetchingPageNoPathParamsTemplate(answers.name)));
@@ -180,6 +173,10 @@ const askQuestions = async () => {
   actions.forEach(action => action());
 }
 
-Promise.all([askQuestions()]).then(() => {
-  rlp.close();
-});
+clear();
+console.log(
+  chalk.yellow(
+    figlet.textSync('New Route', { horizontalLayout: 'full' })
+  )
+);
+askQuestions();
