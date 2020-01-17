@@ -2,7 +2,7 @@ import React, {FunctionComponent} from 'react';
 
 const Home: FunctionComponent<void> = () => (
   <div>
-    It works!
+    It works again!
   </div>
 );
 Home.displayName = 'Home';
