@@ -192,7 +192,7 @@ module.exports = (env = {}) => {
 
   if (isDev) {
     if (!env.nostart && !isProfiling) {
-      //serverConfig.plugins.push(new NodemonPlugin());
+      serverConfig.plugins.push(new NodemonPlugin());
     }
     serverConfig.plugins.push(new CleanWebpackPlugin({
       cleanOnceBeforeBuildPatterns: ['!client*.js'],
