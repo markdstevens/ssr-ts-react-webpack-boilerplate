@@ -9,9 +9,7 @@ const rimraf = require('rimraf');
 
 clear();
 console.log(
-  chalk.yellow(
-    figlet.textSync('Destroy Route', { horizontalLayout: 'full' })
-  )
+  chalk.yellow(figlet.textSync('Destroy Route', { horizontalLayout: 'full' }))
 );
 
 const run = async () => {
@@ -23,7 +21,9 @@ const run = async () => {
 
   if (fs.existsSync(routesDir)) {
     const filesToExclude = ['index.ts', 'types.ts', 'routes.ts'];
-    const routes = fs.readdirSync(routesDir).filter(file => !filesToExclude.includes(file));
+    const routes = fs
+      .readdirSync(routesDir)
+      .filter(file => !filesToExclude.includes(file));
 
     const actions = [];
 
@@ -43,7 +43,9 @@ const run = async () => {
       const pagePath = `${pagesDir}${camelCaseRouteName}.tsx`;
       const routePath = `${routesDir}${camelCaseRouteName}.ts`;
       const storeDir = `${storesDir}${lowerCaseRouteName}`;
-      const storeFiles = fs.readdirSync(storeDir);
+      const storeFiles = fs.existsSync(storeDir)
+        ? fs.readdirSync(storeDir)
+        : null;
 
       actions.push({
         action: () => fs.unlinkSync(pagePath),
@@ -57,17 +59,23 @@ const run = async () => {
         error: `Failed to remove ${routePath}`
       });
 
-      actions.push({
-        action: () => rimraf.sync(storeDir),
-        success: storeFiles.map(file => `Removed ${storeDir}/${file}`).join('\n'),
-        error: `Failed to remove ${storeDir}`
-      });
+      if (storeFiles) {
+        actions.push({
+          action: () => rimraf.sync(storeDir),
+          success: storeFiles
+            .map(file => `Removed ${storeDir}/${file}`)
+            .join('\n'),
+          error: `Failed to remove ${storeDir}`
+        });
+      }
 
       actions.push({
         action: () =>
           fs.writeFileSync(
             routeFile,
-            fs.readFileSync(routeFile).toString('utf-8')
+            fs
+              .readFileSync(routeFile)
+              .toString('utf-8')
               .split('\n')
               .filter(line => !line.includes(`${camelCaseRouteName}Route`))
               .join('\n')
@@ -76,7 +84,10 @@ const run = async () => {
         error: `Failed to remove route entry from ${routeFile}`
       });
 
-      const configLines = fs.readFileSync(configFile).toString('utf-8').split('\n');
+      const configLines = fs
+        .readFileSync(configFile)
+        .toString('utf-8')
+        .split('\n');
       let bracketCount = 0;
       let insideConfig = false;
       const configWithoutRoute = configLines.filter((line, index) => {
@@ -101,11 +112,12 @@ const run = async () => {
       });
 
       actions.push({
-        action: () => fs.writeFileSync(configFile, configWithoutRoute.join('\n')),
+        action: () =>
+          fs.writeFileSync(configFile, configWithoutRoute.join('\n')),
         success: `Removed config entry from ${configFile}`,
         error: `Failed to remove config entry from ${configFile}`
       });
-      
+
       actions.forEach(actionObj => {
         try {
           actionObj.action();
@@ -120,5 +132,3 @@ const run = async () => {
 };
 
 run();
-
-
