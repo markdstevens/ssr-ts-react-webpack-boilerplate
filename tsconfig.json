@@ -16,21 +16,17 @@
     "strict": true,
     "isolatedModules": true,
     "paths": {
-      "config": [ "config/index.ts"],
+      "config": ["config/index.ts"],
       "components/*": ["common/components/*"],
       "hooks/*": ["common/hooks/*"],
       "pages/*": ["common/pages/*"],
-      "stores/*": ["common/stores/*" ],
-      "routes": [ "common/routes/index.ts" ],
-      "utils/*": [ "common/utils/*" ],
-      "styles/*": [ "common/styles/*" ],
-      "images/*": [ "common/images/*" ]
+      "stores/*": ["common/stores/*"],
+      "routes": ["common/routes/index.ts"],
+      "utils/*": ["common/utils/*"],
+      "styles/*": ["common/styles/*"],
+      "images/*": ["common/images/*"]
     },
-    "typeRoots" : [
-      "./src/common/types"
-    ]
+    "typeRoots": ["./src/common/types"]
   },
-  "include": [
-    "./src/**/*"
-  ],
+  "include": ["./src/**/*"]
 }

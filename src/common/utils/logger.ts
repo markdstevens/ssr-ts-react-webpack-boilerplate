@@ -1,4 +1,4 @@
-import {Event} from 'utils/event';
+import { Event } from 'utils/event';
 
 interface SchedulerInteraction {
   id: number;
@@ -24,11 +24,13 @@ export const loggerUtils = {
       return returnVal || null;
     };
 
-    return Object.keys(obj).reduce((currentStr, nextKey) => {
-      currentStr += `${nextKey}='${getVal(obj[nextKey])}' `;
-      return currentStr;
-    }, '').trim();
-  },
+    return Object.keys(obj)
+      .reduce((currentStr, nextKey) => {
+        currentStr += `${nextKey}='${getVal(obj[nextKey])}' `;
+        return currentStr;
+      }, '')
+      .trim();
+  }
 };
 
 /**
@@ -67,13 +69,13 @@ export const logger = {
    * belonging to this update
    */
   profile: (
-      id: string,
-      phase: 'mount' | 'update',
-      actualDuration: number,
-      baseDuration: number,
-      startTime: number,
-      commitTime: number,
-      interactions: Set<SchedulerInteraction>
+    id: string,
+    phase: 'mount' | 'update',
+    actualDuration: number,
+    baseDuration: number,
+    startTime: number,
+    commitTime: number,
+    interactions: Set<SchedulerInteraction>
   ): void => {
     const logVal = loggerUtils.convertToLogString({
       id,

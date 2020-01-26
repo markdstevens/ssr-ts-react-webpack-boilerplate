@@ -1,5 +1,5 @@
-import {GenericState} from 'stores/base';
-import {axiosWrapper} from 'utils/axiosWrapper';
+import { GenericState } from 'stores/base';
+import { axiosWrapper } from 'utils/axiosWrapper';
 
 /**
  * @description
@@ -15,8 +15,8 @@ import {axiosWrapper} from 'utils/axiosWrapper';
  */
 export async function fetchWrapper<T>(url: string): Promise<GenericState> {
   try {
-    return {data: await axiosWrapper<T>(url)};
+    return { data: await axiosWrapper<T>(url) };
   } catch (e) {
-    return {data: null};
+    return { data: null };
   }
-};
+}

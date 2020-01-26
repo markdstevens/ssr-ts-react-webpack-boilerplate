@@ -3,7 +3,8 @@
   "extends": [
     "plugin:react/recommended",
     "plugin:@typescript-eslint/recommended",
-    "google"
+    "google",
+    "prettier"
   ],
   "parserOptions": {
     "ecmaVersion": 2018,
@@ -28,11 +29,8 @@
     "react/state-in-constructor": "error",
     "react/static-property-placement": "error",
     "react/jsx-max-depth": ["error", { "max": 5 }],
-    "react/jsx-max-props-per-line": "error",
     "react/jsx-no-useless-fragment": "error",
     "react/jsx-pascal-case": "error",
-    "react/jsx-props-no-multi-spaces": "error",
-    "react/jsx-wrap-multilines": "error",
 
     // typescript rules
     "@typescript-eslint/interface-name-prefix": "error",
@@ -42,7 +40,8 @@
     "eol-last": "error",
     "comma-dangle": "off",
     "require-jsdoc": "off",
-    "object-curly-spacing": "off"
+    "object-curly-spacing": "off",
+    "no-restricted-imports": ["error", { "patterns": ["../*"] }]
   },
   "settings": {
     "import/resolver": "webpack",

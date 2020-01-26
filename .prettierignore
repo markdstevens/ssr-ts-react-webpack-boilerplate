@@ -1,2 +1,6 @@
 src/common/routes/routes.ts
 src/config/base.ts
+src/public/
+cli/
+dist/
+node_modules/

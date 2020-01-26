@@ -1,4 +1,3 @@
-
 const dataFetchingPageTemplateWithPathParams = (name, keys) => {
   return `import React, {FunctionComponent} from 'react';
 import {${name.pascal}State, ${name.pascal}Props, store} from 'stores/${name.lower}';
@@ -12,7 +11,7 @@ const ${name.pascal}: FunctionComponent<${name.pascal}Props> = (
    * update this variable to use match.params to form the correct API url
    *
    * You have access to:
-   *  ${keys.map((key) => `match.params.${key.name}`).join('\n')}
+   *  ${keys.map(key => `match.params.${key.name}`).join('\n')}
    */
   const {url} = config.stores.${name.camel};
   const [state, dispatch] = store.useCustomState();
