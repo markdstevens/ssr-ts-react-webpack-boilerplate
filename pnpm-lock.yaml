@@ -47,6 +47,7 @@ devDependencies:
   css-modules-typescript-loader: 4.0.0
   eslint: 6.8.0
   eslint-config-google: 0.14.0_eslint@6.8.0
+  eslint-config-prettier: 6.9.0_eslint@6.8.0
   eslint-import-resolver-typescript: 2.0.0_e350486e76511e5213bbefec0777d336
   eslint-import-resolver-webpack: 0.12.1_1ca05585c12a40acaa031c75abf132cf
   eslint-plugin-import: 2.20.0_eslint@6.8.0
@@ -3819,6 +3820,16 @@ packages:
       eslint: '>=5.16.0'
     resolution:
       integrity: sha512-WsbX4WbjuMvTdeVL6+J3rK1RGhCTqjsFjX7UMSMgZiyxxaNLkoJENbrGExzERFeoTpGw3F3FypTiWAP9ZXzkEw==
+  /eslint-config-prettier/6.9.0_eslint@6.8.0:
+    dependencies:
+      eslint: 6.8.0
+      get-stdin: 6.0.0
+    dev: true
+    hasBin: true
+    peerDependencies:
+      eslint: '>=3.14.1'
+    resolution:
+      integrity: sha512-k4E14HBtcLv0uqThaI6I/n1LEqROp8XaPu6SO9Z32u5NlGRC07Enu1Bh2KEFw4FNHbekH8yzbIU9kUGxbiGmCA==
   /eslint-import-resolver-node/0.3.3:
     dependencies:
       debug: 2.6.9
@@ -4641,6 +4652,12 @@ packages:
       node: '>=0.12.0'
     resolution:
       integrity: sha1-Ei4WFZHiH/TFJTAwVpPyDmOTo5g=
+  /get-stdin/6.0.0:
+    dev: true
+    engines:
+      node: '>=4'
+    resolution:
+      integrity: sha512-jp4tHawyV7+fkkSKyvjuLZswblUtz+SQKzSWnBbii16BuZksJlU1wuBYXY75r+duh/llF1ur6oNwi+2ZzjKZ7g==
   /get-stdin/7.0.0:
     dev: true
     engines:
@@ -11599,6 +11616,7 @@ specifiers:
   ejs: ^3.0.1
   eslint: ^6.8.0
   eslint-config-google: ^0.14.0
+  eslint-config-prettier: ^6.9.0
   eslint-import-resolver-typescript: ^2.0.0
   eslint-import-resolver-webpack: ^0.12.1
   eslint-plugin-import: ^2.20.0

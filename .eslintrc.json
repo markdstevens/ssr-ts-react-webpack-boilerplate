@@ -3,7 +3,8 @@
   "extends": [
     "plugin:react/recommended",
     "plugin:@typescript-eslint/recommended",
-    "google"
+    "google",
+    "prettier"
   ],
   "parserOptions": {
     "ecmaVersion": 2018,
