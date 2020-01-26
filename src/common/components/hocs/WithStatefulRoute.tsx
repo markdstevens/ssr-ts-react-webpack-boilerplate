@@ -1,9 +1,9 @@
 import React from 'react';
-import {RouteComponentProps} from 'react-router-dom';
-import {Store} from 'stores/base';
-import {useInitialData} from 'components/App';
-import {LoadableComponent} from '@loadable/component';
-import {StatefulDynamicRoute, StatefulStaticRoute} from 'routes';
+import { RouteComponentProps } from 'react-router-dom';
+import { Store } from 'stores/base';
+import { useInitialData } from 'components/App';
+import { LoadableComponent } from '@loadable/component';
+import { StatefulDynamicRoute, StatefulStaticRoute } from 'routes';
 
 /**
  * @description StatefulRoute
@@ -27,20 +27,20 @@ import {StatefulDynamicRoute, StatefulStaticRoute} from 'routes';
  * to the wrapped component and its decendents.
  */
 export function withStatefulDynamicRoute<T, R = any>(
-    WrappedComponent: LoadableComponent<RouteComponentProps<R>>,
-    routeStore: Store<T>
+  WrappedComponent: LoadableComponent<RouteComponentProps<R>>,
+  routeStore: Store<T>
 ): StatefulDynamicRoute<R> {
   const Wrapper = (props: RouteComponentProps<R>): JSX.Element => (
     <routeStore.CustomProvider
       initialState={useInitialData() as T}
       reducer={routeStore.reducer}
     >
-      <WrappedComponent {...props }/>
+      <WrappedComponent {...props} />
     </routeStore.CustomProvider>
   );
   Wrapper.displayName = 'StatefulRoute';
   return Wrapper;
-};
+}
 
 /**
  * @description StatefulRoute
@@ -62,18 +62,17 @@ export function withStatefulDynamicRoute<T, R = any>(
  * to the wrapped component and its decendents.
  */
 export function withStatefulStaticRoute<T>(
-    WrappedComponent: LoadableComponent<void>,
-    routeStore: Store<T>
+  WrappedComponent: LoadableComponent<void>,
+  routeStore: Store<T>
 ): StatefulStaticRoute<T> {
   const Wrapper = (props: any): JSX.Element => (
     <routeStore.CustomProvider
       initialState={useInitialData() as T}
       reducer={routeStore.reducer}
     >
-      <WrappedComponent {...props }/>
+      <WrappedComponent {...props} />
     </routeStore.CustomProvider>
   );
   Wrapper.displayName = 'StatefulRoute';
   return Wrapper;
-};
-
+}

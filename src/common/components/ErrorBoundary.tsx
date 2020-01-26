@@ -1,6 +1,6 @@
-import React, {Component, FunctionComponent, ReactNode} from 'react';
-import {logger} from 'utils/logger';
-import {Event} from 'utils/event';
+import React, { Component, FunctionComponent, ReactNode } from 'react';
+import { logger } from 'utils/logger';
+import { Event } from 'utils/event';
 
 interface ErrorBoundaryState {
   hasError: boolean;
@@ -43,7 +43,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
    */
   constructor(props: ErrorBoundaryProps) {
     super(props);
-    this.state = {hasError: false};
+    this.state = { hasError: false };
   }
 
   /**
@@ -52,7 +52,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
    * error from a decendent component.
    */
   static getDerivedStateFromError(): ErrorBoundaryState {
-    return {hasError: true};
+    return { hasError: true };
   }
 
   /**
@@ -65,8 +65,8 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
    */
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
     logger.event(
-        Event.ERROR_BOUNDARY,
-        `error='${error}' stackTrace='${errorInfo?.componentStack}'`,
+      Event.ERROR_BOUNDARY,
+      `error='${error}' stackTrace='${errorInfo?.componentStack}'`
     );
   }
 
@@ -78,7 +78,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
    * @return {JSX.Element | ReactNode} The JSX of the children or the fallback
    */
   render(): JSX.Element | ReactNode {
-    const {children, Fallback} = this.props;
+    const { children, Fallback } = this.props;
     if (this.state.hasError) {
       return Fallback ? <Fallback /> : <h1>Something went wrong.</h1>;
     }
@@ -87,4 +87,4 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   }
 }
 
-export {ErrorBoundary};
+export { ErrorBoundary };

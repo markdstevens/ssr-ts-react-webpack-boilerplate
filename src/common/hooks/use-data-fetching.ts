@@ -1,8 +1,8 @@
-import {useState, useEffect, useRef, Dispatch} from 'react';
-import {GenericState} from 'stores/base';
-import {axiosWrapper} from 'utils/axiosWrapper';
+import { Dispatch, useEffect, useRef, useState } from 'react';
+import { GenericState } from 'stores/base';
+import { axiosWrapper } from 'utils/axiosWrapper';
 
-export interface UseDataFetchingResponse<T>{
+export interface UseDataFetchingResponse<T> {
   error: string | null;
   loading: boolean;
 }
@@ -27,35 +27,37 @@ export interface UseDataFetchingResponse<T>{
  *
  * @return {UseDataFetchingResponse} Response that indicates the state of the
  * axios request: loading or error
-*/
+ */
 export function useDataFetching<T>(
-    dataSource: string,
-    initialState: T,
-    dispatch: Dispatch<GenericState>
+  dataSource: string,
+  initialState: T,
+  dispatch: Dispatch<GenericState>
 ): UseDataFetchingResponse<T> {
   const didMount = useRef(false);
   const [state, setState] = useState({
     error: null,
-    loading: didMount.current,
+    loading: didMount.current
   });
 
   useEffect(() => {
     if (didMount.current || !initialState) {
       didMount.current = true;
-      setState({error: null, loading: true});
+      setState({ error: null, loading: true });
       axiosWrapper<T>(dataSource)
-          .then((data) => {
-            setState({error: null, loading: false});
-            dispatch({data});
-          })
-          .catch((error) => setState({
+        .then(data => {
+          setState({ error: null, loading: false });
+          dispatch({ data });
+        })
+        .catch(error =>
+          setState({
             error: error.toString(),
-            loading: false,
-          }));
+            loading: false
+          })
+        );
     } else {
       didMount.current = true;
     }
   }, [dataSource]);
 
   return state;
-};
+}

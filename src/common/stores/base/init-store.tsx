@@ -1,5 +1,5 @@
-import React, {createContext, useReducer, useContext} from 'react';
-import {Store, RouteProvider, Reducer} from 'stores/base';
+import React, { createContext, useContext, useReducer } from 'react';
+import { Reducer, RouteProvider, Store } from 'stores/base';
 
 /**
  * @description
@@ -17,17 +17,17 @@ export function initStore<T>(): Store<T> {
     CustomProvider: ({
       reducer,
       initialState,
-      children,
+      children
     }: RouteProvider<T>): JSX.Element => (
-      <CustomContext.Provider value={ useReducer(reducer, initialState) }>
+      <CustomContext.Provider value={useReducer(reducer, initialState)}>
         {children}
       </CustomContext.Provider>
     ),
     useCustomState: (): Reducer<T> => {
-      return (useContext(CustomContext) as Reducer<T>);
+      return useContext(CustomContext) as Reducer<T>;
     },
     reducer: (prevState: T, nextState: T) =>
-      Object.assign({}, prevState, nextState),
+      Object.assign({}, prevState, nextState)
   };
   store.CustomProvider.displayName = 'CustomProvider';
   return store;
