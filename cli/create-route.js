@@ -143,16 +143,16 @@ const askQuestions = async () => {
       rootName: `${answers.name.pascal}ApiResponse`,
       prefix: ''
     });
+
+    const keys = [];
+    pathToRegexp(answers.path, keys);
     
     actions.push(() => updateBaseConfig(config, answers));
     actions.push(() => fs.mkdirSync(newStoreDirPath));
     actions.push(() => fs.mkdirSync(`${newStoreDirPath}/generated`));
-    actions.push(() => fs.writeFileSync(`${newStoreDirPath}/store.ts`, storeTemplate(answers.name, answers.name.lower, answers.apiURLWithPathParams)));
+    actions.push(() => fs.writeFileSync(`${newStoreDirPath}/store.ts`, storeTemplate(answers.name, answers.name.lower, answers.path, keys)));
     actions.push(() => fs.writeFileSync(`${newStoreDirPath}/index.ts`, `export * from './types';\nexport * from './store';\n`));
     actions.push(() => fs.writeFileSync(`${newStoreDirPath}/generated/${answers.name.camel}ApiResponse.d.ts`, answers.types));
-
-    const keys = [];
-    pathToRegexp(answers.path, keys);
 
     if (!fs.existsSync(config.pagesDir)) {
       actions.push(() => fs.mkdirSync(config.pagesDir));

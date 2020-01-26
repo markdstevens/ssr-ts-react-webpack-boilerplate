@@ -4,14 +4,14 @@ import React, {
   FunctionComponent,
   Profiler,
   StrictMode
-} from 'react';
-import {Route, Switch} from 'react-router-dom';
-import {routes} from 'routes';
-import {GenericState} from 'stores/base';
-import {ErrorBoundary} from 'components/ErrorBoundary';
-import {logger} from 'utils/logger';
+} from "react";
+import { Route, Switch } from "react-router-dom";
+import { routes } from "routes";
+import { GenericState } from "stores/base";
+import { ErrorBoundary } from "components/ErrorBoundary";
+import { logger } from "utils/logger";
 
-const initialRender = (initial: boolean): () => boolean => {
+const initialRender = (initial: boolean): (() => boolean) => {
   let initialRender = initial;
   return (): boolean => {
     const val = initialRender;
@@ -28,12 +28,14 @@ export const useInitialData = (): GenericState | null => {
   return isInitialRender() ? data : null;
 };
 
-export const App: FunctionComponent<GenericState> = ({data}: GenericState) => (
+export const App: FunctionComponent<GenericState> = ({
+  data
+}: GenericState) => (
   <StrictMode>
     <main>
       <InitialContext.Provider value={data}>
         <Switch>
-          {routes.map(({path, exact, component: Page, name}) => (
+          {routes.map(({ path, exact, component: Page, name }) => (
             <Route
               key={name}
               path={path}
@@ -53,4 +55,4 @@ export const App: FunctionComponent<GenericState> = ({data}: GenericState) => (
   </StrictMode>
 );
 
-App.displayName = 'App';
+App.displayName = "App";

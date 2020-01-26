@@ -11,10 +11,15 @@ export type StatefulStaticRoute<T = any> =
 
 export type StatelessRoute = LoadableComponent<any>;
 
+export type PageComponent =
+  StatefulDynamicRoute |
+  StatefulStaticRoute |
+  StatelessRoute;
+
 export interface Route {
   name: string;
   path?: string;
   exact?: boolean;
-  component: StatefulDynamicRoute | StatefulStaticRoute | StatelessRoute;
+  component: PageComponent;
   fetchInitialData?: (req: Request) => Promise<GenericState>;
 }

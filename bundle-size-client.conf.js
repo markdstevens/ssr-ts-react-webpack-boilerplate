@@ -19,6 +19,14 @@ module.exports = {
     {
       name: 'pages-home.client.bundle.*.js',
       maxSize: '5K'
+    },
+    {
+      name: 'precache-manifest.*.js',
+      maxSize: '810 bytes'
+    },
+    {
+      name: 'service-worker.js',
+      maxSize: '1.08 Kb'
     }
   ]
 };
