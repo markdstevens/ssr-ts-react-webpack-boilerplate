@@ -1,8 +1,6 @@
 const dataFetchingPageTemplateWithPathParams = (name, keys) => {
   return `import React, {FunctionComponent} from 'react';
-import {${name.pascal}State, ${name.pascal}Props, store} from 'stores/${
-    name.lower
-  }';
+import {${name.pascal}State, ${name.pascal}Props, store} from 'stores/${name.lower}';
 import {useDataFetching} from 'hooks/use-data-fetching';
 import {config} from 'config';
 
