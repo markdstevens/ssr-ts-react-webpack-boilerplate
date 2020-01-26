@@ -11,7 +11,7 @@ import {GenericState} from 'stores/base';
 import {ErrorBoundary} from 'components/ErrorBoundary';
 import {logger} from 'utils/logger';
 
-const initialRender = (initial: boolean): () => boolean => {
+const initialRender = (initial: boolean): (() => boolean) => {
   let initialRender = initial;
   return (): boolean => {
     const val = initialRender;
@@ -28,7 +28,9 @@ export const useInitialData = (): GenericState | null => {
   return isInitialRender() ? data : null;
 };
 
-export const App: FunctionComponent<GenericState> = ({data}: GenericState) => (
+export const App: FunctionComponent<GenericState> = ({
+  data
+}: GenericState) => (
   <StrictMode>
     <main>
       <InitialContext.Provider value={data}>
@@ -40,7 +42,8 @@ export const App: FunctionComponent<GenericState> = ({data}: GenericState) => (
               exact={exact}
               component={(props: any): JSX.Element => (
                 <ErrorBoundary>
-                  <Profiler id={name} onRender={logger.profile}>
+                  <Profiler id={name}
+                    onRender={logger.profile}>
                     <Page {...props} />
                   </Profiler>
                 </ErrorBoundary>

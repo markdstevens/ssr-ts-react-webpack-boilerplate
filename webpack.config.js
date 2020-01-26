@@ -7,13 +7,13 @@ const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const LoadablePlugin = require('@loadable/webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const {TsconfigPathsPlugin} = require('tsconfig-paths-webpack-plugin');
-const WorkboxPlugin = require('workbox-webpack-plugin');
+const WorkboxWebpackPlugin = require('workbox-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const {GenerateSW} = require('workbox-webpack-plugin');
 const NodemonPlugin = require('nodemon-webpack-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer');
 const WebpackBundleSizeLimitPlugin = require('webpack-bundle-size-limit-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = (env = {}) => {
   const isDev = process.env.NODE_ENV === 'development' 
@@ -104,14 +104,9 @@ module.exports = (env = {}) => {
       }),
       new MiniCssExtractPlugin({
         filename: isDev ? '[name].css' : '[name]-[contenthash].css'
-      }),
-      new CopyWebpackPlugin([
-        {from: 'src/public/index.ejs'},
-        {from: 'src/public/manifest.json'},
-        {from: 'src/public/penguin.png'}
-      ])
+      })
     ],
-    stats: isDev ? 'errors-warnings' : 'errors-only'
+    stats: 'errors-warnings'
   };
 
   if (!isDev) {
@@ -127,11 +122,7 @@ module.exports = (env = {}) => {
      * able to drop unused functions, thus tangibly recording the effects of
      * tree shaking.
      */
-    baseConfig.optimization.minimizer.push(new TerserPlugin({
-      terserOptions: {
-        warnings: true
-      }
-    }));
+    baseConfig.optimization.minimizer.push(new TerserPlugin({}));
   }
 
   const clientConfig = merge.smart(baseConfig, {
@@ -143,21 +134,24 @@ module.exports = (env = {}) => {
     },
     plugins: [
       new webpack.DefinePlugin({__BROWSER__: true}),
-      new LoadablePlugin()
+      new LoadablePlugin(),
+      new HtmlWebpackPlugin({
+        title: 'React App',
+        filename: 'index.html',				
+	      template: 'src/public/index.ejs'
+      })
     ]
   });
 
   if (!isDev) {
     clientConfig.plugins.push(...[
-      new GenerateSW({
-        navigateFallback: '/'
-      }),
       new WebpackBundleSizeLimitPlugin({
         config: path.join(__dirname, 'bundle-size-client.conf.js'),
-        extensions: ['.css', '.js'],
-        enforceForAllBundles: true
+        include: ['.css', '.js'],
+        enforceForAllBundles: true,
+        decimalPlaces: 2
       })
-  ]);
+    ]);
   }
 
   if (isDev) {
@@ -169,6 +163,11 @@ module.exports = (env = {}) => {
     }));
   }
 
+  clientConfig.plugins.push(new WorkboxWebpackPlugin.InjectManifest({
+    swSrc: './src/public/service-worker.js',
+    swDest: "service-worker.js"
+  }));
+
   const serverConfig = merge.smart(baseConfig, {
     entry: './src/server/app.tsx',
     target: 'node',
@@ -179,6 +178,11 @@ module.exports = (env = {}) => {
     },
     plugins: [
       new webpack.DefinePlugin({__BROWSER__: false}),
+      new CopyWebpackPlugin([
+//        {from: 'src/public/index.ejs'},
+        {from: 'src/public/manifest.json'},
+        {from: 'src/public/penguin.png'}
+      ])
     ]
   });
 
@@ -202,7 +206,7 @@ module.exports = (env = {}) => {
   } else {
     serverConfig.plugins.push(new WebpackBundleSizeLimitPlugin({
       config: path.join(__dirname, 'bundle-size-server.conf.js'),
-      extensions: ['.js', '.json'],
+      include: ['.js', '.json'],
       enforceForAllBundles: true
     }));
   }

@@ -5,5 +5,5 @@ import {config as prodConfig} from './prod';
 export const config = Object.assign(
     {},
     baseConfig,
-    __DEV__ ? devConfig : prodConfig,
+  __DEV__ ? devConfig : prodConfig
 );

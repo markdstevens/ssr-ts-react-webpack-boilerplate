@@ -3,7 +3,7 @@ const typesTemplate = (name, pathParams = {}) => {
     pathParams
         .map((param) => param.name)
         .map((name, i) => {
-          let str = `${name}: 'string';`;
+          let str = `${name}: string;`;
           if (i !== pathParams.length - 1) {
             str += ('\n' + '  ');
           }

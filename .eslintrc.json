@@ -12,14 +12,27 @@
       "jsx": true
     }
   },
-  "plugins": [
-    "react-hooks",
-    "import"
-  ],
+  "plugins": ["react-hooks", "import"],
   "rules": {
     // react rules
-    "react-hooks/rules-of-hooks": "error", 
+    "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
+    "react/no-array-index-key": "error",
+    "react/no-redundant-should-component-update": "error",
+    "react/no-this-in-sfc": "error",
+    "react/no-unused-prop-types": "error",
+    "react/no-unused-state": "error",
+    "react/prefer-read-only-props": "error",
+    "react/prefer-stateless-function": "error",
+    "react/require-default-props": "error",
+    "react/state-in-constructor": "error",
+    "react/static-property-placement": "error",
+    "react/jsx-max-depth": ["error", { "max": 5 }],
+    "react/jsx-max-props-per-line": "error",
+    "react/jsx-no-useless-fragment": "error",
+    "react/jsx-pascal-case": "error",
+    "react/jsx-props-no-multi-spaces": "error",
+    "react/jsx-wrap-multilines": "error",
 
     // typescript rules
     "@typescript-eslint/interface-name-prefix": "error",
@@ -27,7 +40,9 @@
 
     // custom rules
     "eol-last": "error",
-    "comma-dangle": "off"
+    "comma-dangle": "off",
+    "require-jsdoc": "off",
+    "object-curly-spacing": "off"
   },
   "settings": {
     "import/resolver": "webpack",

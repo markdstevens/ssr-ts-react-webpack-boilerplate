@@ -1,7 +1,7 @@
 const staticStatefulRouteTemplate = (answers) => (
   `import loadable from '@loadable/component';
 import {Route} from './types';
-import {fetchDelegate, store} from 'stores/${answers.name.lower}';
+import {fetch, store} from 'stores/${answers.name.lower}';
 import {withStatefulStaticRoute} from 'components/hocs';
 
 export const ${answers.name.camel}Route: Route = {
@@ -12,7 +12,7 @@ export const ${answers.name.camel}Route: Route = {
       loadable(() => import('../pages/${answers.name.camel}')),
       store
   ),
-  fetchInitialData: fetchDelegate
+  fetchInitialData: fetch
 };
 `);
 

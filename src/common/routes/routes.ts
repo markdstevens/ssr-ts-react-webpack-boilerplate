@@ -1,5 +1,6 @@
 import {Route} from 'routes';
 import {homeRoute} from './home';
+import {defaultRoute} from './defaultRoute';
 
 /**
  * @description
@@ -19,5 +20,6 @@ import {homeRoute} from './home';
  *   DONT MANUALLY ALTER THIS LIST UNLESS YOU KNOW WHAT YOU'RE DOING
  */
 export const routes: Route[] = [
-  homeRoute
+  homeRoute,
+  defaultRoute
 ];

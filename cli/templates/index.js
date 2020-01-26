@@ -5,7 +5,8 @@ const basicPageTemplate = require('./basicPage');
 const dataFetchingPageNoPathParamsTemplate = require('./dataFetchingNoPathParams');
 const dataFetchingWithPathParamsTemplate = require('./dataFetchingWithPathParams');
 const typesTemplate = require('./types');
-const storeTemplate = require('./store');
+const pathParamsStoreTemplate = require('./pathParamsStoreTemplate');
+const noPathParamsStoreTemplate = require('./noPathParamsStoreTemplate');
 
 module.exports = {
   simpleRouteTemplate,
@@ -15,5 +16,6 @@ module.exports = {
   dataFetchingPageNoPathParamsTemplate,
   dataFetchingWithPathParamsTemplate,
   typesTemplate,
-  storeTemplate,
+  pathParamsStoreTemplate,
+  noPathParamsStoreTemplate
 };

@@ -20,8 +20,8 @@ server.use(express.static('dist'));
 server.get('*', (req, res, next) => {
   const extractor = new ChunkExtractor({statsFile});
 
-  const activeRoute: Route | null = routes.find((route) =>
-    matchPath(req.url, route)) || null;
+  const activeRoute: Route | null =
+    routes.find((route) => matchPath(req.url, route)) || null;
 
   if (activeRoute?.name === '404') {
     logger.event(
@@ -34,33 +34,40 @@ server.get('*', (req, res, next) => {
     activeRoute.fetchInitialData(req) :
     Promise.resolve();
 
-  promise.then((data: GenericState | void) => {
-    const html = renderToString(
-        extractor.collectChunks(
-            <StaticRouter location={req.url}>
-              <App data={data}/>
-            </StaticRouter>
-        )
-    );
+  promise
+      .then((data: GenericState | void) => {
+        const html = renderToString(
+            extractor.collectChunks(
+                <StaticRouter location={req.url}>
+                  <App data={data} />
+                </StaticRouter>
+            )
+        );
 
-    const [linkTags, styleTags, scriptTags] = [
-      extractor.getScriptTags(),
-      extractor.getStyleTags(),
-      extractor.getScriptTags()
-    ];
+        const [linkTags, styleTags, scriptTags] = [
+          extractor.getScriptTags(),
+          extractor.getStyleTags(),
+          extractor.getScriptTags()
+        ];
 
-    const initialDataScript = `
+        const initialDataScript = `
       <script>window.__INITIAL_STATE__=${JSON.stringify(data)}</script>
     `.trim();
 
-    res.render('index', {
-      title: 'React App',
-      scriptTags: initialDataScript + scriptTags,
-      linkTags,
-      styleTags,
-      html
-    });
-  }).catch(next);
+        res.render('index', {
+          htmlWebpackPlugin: {
+            options: {
+              title: 'React App',
+              scriptTags: initialDataScript + scriptTags,
+              linkTags,
+              styleTags,
+              html
+            }
+          },
+          inject: false
+        });
+      })
+      .catch(next);
 });
 
 server.listen(3000, () => logger.info('App listening on port 3000!'));

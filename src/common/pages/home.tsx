@@ -1,10 +1,10 @@
 import React, {FunctionComponent} from 'react';
+import {Link} from 'react-router-dom';
 
 const Home: FunctionComponent<void> = () => (
   <div>
-    It works again!
+    <Link to="/pokemon/lugia">Lugia</Link>
   </div>
 );
-Home.displayName = 'Home';
 
 export default Home;

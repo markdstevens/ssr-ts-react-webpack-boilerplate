@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title><%= title %></title>
+    <title><%= htmlWebpackPlugin.options.title %></title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#317EFB"/>
     <link rel="icon" href="data:," />
     <link rel="manifest" href="/manifest.json" />
     <link rel="apple-touch-icon" href="/penguin.png">
-    <%- linkTags %>
-    <%- styleTags %>
+    <%- htmlWebpackPlugin.options.linkTags %>
+    <%- htmlWebpackPlugin.options.styleTags %>
   </head>
   <body>
-    <div id="app"><% html %></div>
+    <div id="app"><% htmlWebpackPlugin.options.html %></div>
     <noscript>Uh oh! Your browser does not support JavaScript!</noscript>
   </body>
-  <%- scriptTags %>
+  <%- htmlWebpackPlugin.options.scriptTags %>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
