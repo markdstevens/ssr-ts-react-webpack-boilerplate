@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const pascalcase = require('pascalcase');
 const camelcase = require('camelcase');
-const { pathToRegexp } = require("path-to-regexp");
+const { pathToRegexp } = require('path-to-regexp');
 const { json2ts } = require('json-ts');
 const axios = require('axios');
 const inquirer = require('inquirer');
@@ -18,7 +18,8 @@ const {
   dataFetchingPageNoPathParamsTemplate,
   dataFetchingWithPathParamsTemplate,
   typesTemplate,
-  storeTemplate
+  pathParamsStoreTemplate,
+  noPathParamsStoreTemplate
 } = require('./templates');
 
 const config = {
@@ -39,7 +40,9 @@ const commonValidator = (val, minLength = 2) => {
 };
 
 const updateRoutesFile = (config, answers) => {
-  const text = fs.readFileSync(`${config.routesDir}/routes.ts`).toString('utf-8');
+  const text = fs
+    .readFileSync(`${config.routesDir}/routes.ts`)
+    .toString('utf-8');
   const textByLine = text.split('\n');
   let routeEntryAlreadyExists = false;
   let indexToInsertRoute = -1;
@@ -53,33 +56,44 @@ const updateRoutesFile = (config, answers) => {
   textByLine.forEach((line, i) => {
     if (line.includes(newImport)) importAlreadyExists = true;
     if (line.includes(newRouteEntry)) routeEntryAlreadyExists = true;
-    if (indexToInsertImport === -1 && !line.includes('import')) indexToInsertImport = i;
-    if (line.includes('const routes: Route[] = [')) indexToInsertRoute = i + (importAlreadyExists ? 1 : 2);
+    if (indexToInsertImport === -1 && !line.includes('import'))
+      indexToInsertImport = i;
+    if (line.includes('const routes: Route[] = ['))
+      indexToInsertRoute = i + (importAlreadyExists ? 1 : 2);
   });
 
-  if (!importAlreadyExists) textByLine.splice(indexToInsertImport, 0, newImport);
-  if (!routeEntryAlreadyExists) textByLine.splice(indexToInsertRoute, 0, newRouteEntry);
+  if (!importAlreadyExists)
+    textByLine.splice(indexToInsertImport, 0, newImport);
+  if (!routeEntryAlreadyExists)
+    textByLine.splice(indexToInsertRoute, 0, newRouteEntry);
 
   fs.writeFileSync(`${config.routesDir}/routes.ts`, textByLine.join('\n'));
 };
 
 const updateBaseConfig = (config, answers) => {
-  const configText = fs.readFileSync(`${config.configDir}/base.ts`).toString('utf-8').split('\n');
+  const configText = fs
+    .readFileSync(`${config.configDir}/base.ts`)
+    .toString('utf-8')
+    .split('\n');
   let indexOfLineToInsert = -1;
   configText.forEach((line, i) => {
     if (line.includes('stores: {')) {
       indexOfLineToInsert = i + 1;
     }
   });
-  configText.splice(indexOfLineToInsert, 0, `    ${answers.name.camel}: {
+  configText.splice(
+    indexOfLineToInsert,
+    0,
+    `    ${answers.name.camel}: {
       url: '${answers.apiURLWithPathParams}'
-    },`);
+    },`
+  );
   fs.writeFileSync(`${config.configDir}/base.ts`, configText.join('\n'));
 };
 
 const askQuestions = async () => {
   const actions = [];
-  
+
   let answers = await inquirer.prompt([
     {
       type: 'input',
@@ -114,7 +128,8 @@ const askQuestions = async () => {
   const newRouteDirPath = `${config.routesDir}/${answers.name.camel}`;
 
   // this modifies answers.path
-  if (answers.path !== '/' && answers.path.endsWith('/')) answers.path = answers.path.substring(0, str.length - 1);
+  if (answers.path !== '/' && answers.path.endsWith('/'))
+    answers.path = answers.path.substring(0, str.length - 1);
   if (!answers.path.startsWith('/')) answers.path = `/${answers.path}`;
 
   // this modifies answers.poweredByApi
@@ -122,22 +137,27 @@ const askQuestions = async () => {
 
   actions.push(() => updateRoutesFile(config, answers));
   if (answers.poweredByApi) {
-    answers = Object.assign(answers, await inquirer.prompt([
-      {
-        type: 'input',
-        name: 'apiURL',
-        message: 'API url (e.g. http://localhost:8080/todos/1)',
-        validate: commonValidator
-      },
-      {
-        type: 'input',
-        name: 'apiURLWithPathParams',
-        message: 'API url structure (e.g. http://localhost:8080/todos/:id',
-        validate: commonValidator
-      }
-    ]));
+    answers = Object.assign(
+      answers,
+      await inquirer.prompt([
+        {
+          type: 'input',
+          name: 'apiURL',
+          message: 'API url (e.g. http://localhost:8080/todos/1)',
+          validate: commonValidator
+        },
+        {
+          type: 'input',
+          name: 'apiURLWithPathParams',
+          message: 'API url structure (e.g. http://localhost:8080/todos/:id',
+          validate: commonValidator
+        }
+      ])
+    );
 
-    const url = answers.apiURL.endsWith('/') ? answers.apiURL.substring(0, answers.apiURL.length - 1) : answers.apiURL;
+    const url = answers.apiURL.endsWith('/')
+      ? answers.apiURL.substring(0, answers.apiURL.length - 1)
+      : answers.apiURL;
     const exampleJSONResponse = await axios.get(url);
     answers.types = json2ts(JSON.stringify(exampleJSONResponse.data), {
       rootName: `${answers.name.pascal}ApiResponse`,
@@ -146,36 +166,87 @@ const askQuestions = async () => {
 
     const keys = [];
     pathToRegexp(answers.path, keys);
-    
+
     actions.push(() => updateBaseConfig(config, answers));
     actions.push(() => fs.mkdirSync(newStoreDirPath));
     actions.push(() => fs.mkdirSync(`${newStoreDirPath}/generated`));
-    actions.push(() => fs.writeFileSync(`${newStoreDirPath}/store.ts`, storeTemplate(answers.name, answers.name.lower, answers.path, keys)));
-    actions.push(() => fs.writeFileSync(`${newStoreDirPath}/index.ts`, `export * from './types';\nexport * from './store';\n`));
-    actions.push(() => fs.writeFileSync(`${newStoreDirPath}/generated/${answers.name.camel}ApiResponse.d.ts`, answers.types));
+    actions.push(() =>
+      fs.writeFileSync(
+        `${newStoreDirPath}/index.ts`,
+        `export * from './types';\nexport * from './store';\n`
+      )
+    );
+    actions.push(() =>
+      fs.writeFileSync(
+        `${newStoreDirPath}/generated/${answers.name.camel}ApiResponse.d.ts`,
+        answers.types
+      )
+    );
 
     if (!fs.existsSync(config.pagesDir)) {
       actions.push(() => fs.mkdirSync(config.pagesDir));
     }
-    actions.push(() => fs.writeFileSync(`${newStoreDirPath}/types.ts`, typesTemplate(answers.name, keys)));
+    actions.push(() =>
+      fs.writeFileSync(
+        `${newStoreDirPath}/types.ts`,
+        typesTemplate(answers.name, keys)
+      )
+    );
     if (!keys.length) {
-      actions.push(() => fs.writeFileSync(`${newPagesDirPath}.tsx`, dataFetchingPageNoPathParamsTemplate(answers.name)));
-      actions.push(() => fs.writeFileSync(`${newRouteDirPath}.ts`, staticStatefulRouteTemplate(answers)));
+      actions.push(() =>
+        fs.writeFileSync(
+          `${newStoreDirPath}/store.ts`,
+          noPathParamsStoreTemplate(answers.name)
+        )
+      );
+      actions.push(() =>
+        fs.writeFileSync(
+          `${newPagesDirPath}.tsx`,
+          dataFetchingPageNoPathParamsTemplate(answers.name)
+        )
+      );
+      actions.push(() =>
+        fs.writeFileSync(
+          `${newRouteDirPath}.ts`,
+          staticStatefulRouteTemplate(answers)
+        )
+      );
     } else {
-      actions.push(() => fs.writeFileSync(`${newPagesDirPath}.tsx`, dataFetchingWithPathParamsTemplate(answers.name, keys)));
-      actions.push(() => fs.writeFileSync(`${newRouteDirPath}.ts`, dynamicStatefulRouteTemplate(answers)));
+      actions.push(() =>
+        fs.writeFileSync(
+          `${newStoreDirPath}/store.ts`,
+          pathParamsStoreTemplate(answers.name, answers.path, keys)
+        )
+      );
+      actions.push(() =>
+        fs.writeFileSync(
+          `${newPagesDirPath}.tsx`,
+          dataFetchingWithPathParamsTemplate(answers.name, keys)
+        )
+      );
+      actions.push(() =>
+        fs.writeFileSync(
+          `${newRouteDirPath}.ts`,
+          dynamicStatefulRouteTemplate(answers)
+        )
+      );
     }
   } else {
-    actions.push(() => fs.writeFileSync(`${newPagesDirPath}.tsx`, basicPageTemplate(answers.name)));
-    actions.push(() => fs.writeFileSync(`${newRouteDirPath}.ts`, simpleRouteTemplate(answers)));
+    actions.push(() =>
+      fs.writeFileSync(
+        `${newPagesDirPath}.tsx`,
+        basicPageTemplate(answers.name)
+      )
+    );
+    actions.push(() =>
+      fs.writeFileSync(`${newRouteDirPath}.ts`, simpleRouteTemplate(answers))
+    );
   }
   actions.forEach(action => action());
-}
+};
 
 clear();
 console.log(
-  chalk.yellow(
-    figlet.textSync('New Route', { horizontalLayout: 'full' })
-  )
+  chalk.yellow(figlet.textSync('New Route', { horizontalLayout: 'full' }))
 );
 askQuestions();

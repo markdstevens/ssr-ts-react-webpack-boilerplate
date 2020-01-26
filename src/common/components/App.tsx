@@ -4,12 +4,12 @@ import React, {
   FunctionComponent,
   Profiler,
   StrictMode
-} from "react";
-import { Route, Switch } from "react-router-dom";
-import { routes } from "routes";
-import { GenericState } from "stores/base";
-import { ErrorBoundary } from "components/ErrorBoundary";
-import { logger } from "utils/logger";
+} from 'react';
+import {Route, Switch} from 'react-router-dom';
+import {routes} from 'routes';
+import {GenericState} from 'stores/base';
+import {ErrorBoundary} from 'components/ErrorBoundary';
+import {logger} from 'utils/logger';
 
 const initialRender = (initial: boolean): (() => boolean) => {
   let initialRender = initial;
@@ -35,14 +35,15 @@ export const App: FunctionComponent<GenericState> = ({
     <main>
       <InitialContext.Provider value={data}>
         <Switch>
-          {routes.map(({ path, exact, component: Page, name }) => (
+          {routes.map(({path, exact, component: Page, name}) => (
             <Route
               key={name}
               path={path}
               exact={exact}
               component={(props: any): JSX.Element => (
                 <ErrorBoundary>
-                  <Profiler id={name} onRender={logger.profile}>
+                  <Profiler id={name}
+                    onRender={logger.profile}>
                     <Page {...props} />
                   </Profiler>
                 </ErrorBoundary>
@@ -55,4 +56,4 @@ export const App: FunctionComponent<GenericState> = ({
   </StrictMode>
 );
 
-App.displayName = "App";
+App.displayName = 'App';

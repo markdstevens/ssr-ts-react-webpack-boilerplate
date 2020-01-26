@@ -4,21 +4,22 @@ const buildPathParamRegex = (path, keys) => {
     path = path.replace(`:${name}`, `(?<${name}>.*)`);
   });
   return path;
-}
+};
 
-const storeTemplate = (
+const pathParamsStoreTemplate = (
   name,
-  pathname,
   path,
   keys
 ) => `import {Request} from 'express';
 import {config} from 'config';
 import {initStore, fetchWrapper} from 'stores/base';
-import {${name.pascal}State, ${name.pascal}Params} from 'stores/${pathname}';
+import {${name.pascal}State, ${name.pascal}Params} from 'stores/${name.lower}';
 
 export const store = initStore<${name.pascal}State>();
 
-export const fetch = async ({ params }: Request): Promise<${name.pascal}State> => {
+export const fetch = async ({ params }: Request): Promise<${
+  name.pascal
+}State> => {
   let {url} = config.stores.${name.camel};
   const path = params['0'];
 
@@ -35,4 +36,4 @@ export const fetch = async ({ params }: Request): Promise<${name.pascal}State> =
 };
 `;
 
-module.exports = storeTemplate;
+module.exports = pathParamsStoreTemplate;
