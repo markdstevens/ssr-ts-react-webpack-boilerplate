@@ -148,14 +148,12 @@ module.exports = (env = {}) => {
 
   if (!isDev) {
     clientConfig.plugins.push(
-      ...[
-        new WebpackBundleSizeLimitPlugin({
-          config: path.join(__dirname, 'bundle-size-client.conf.js'),
-          include: ['.css', '.js'],
-          enforceForAllBundles: true,
-          decimalPlaces: 2
-        })
-      ]
+      new WebpackBundleSizeLimitPlugin({
+        config: path.join(__dirname, 'bundle-size-client.conf.js'),
+        include: ['.css', '.js'],
+        enforceForAllBundles: true,
+        decimalPlaces: 2
+      })
     );
   }
 

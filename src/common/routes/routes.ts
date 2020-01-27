@@ -1,6 +1,6 @@
-import {Route} from 'routes';
-import {homeRoute} from './home';
-import {defaultRoute} from './defaultRoute';
+import { Route } from 'routes';
+import { homeRoute } from './home';
+import { defaultRoute } from './defaultRoute';
 
 /**
  * @description

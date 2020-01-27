@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { Event } from 'utils/event';
 
 interface SchedulerInteraction {

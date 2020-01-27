@@ -1,6 +1,6 @@
 const simpleRouteTemplate = (answers) => (
   `import loadable from '@loadable/component';
-import {Route} from './types';
+import { Route } from './types';
 
 export const ${answers.name.camel}Route: Route = {
   name: '${answers.name.exact}',
