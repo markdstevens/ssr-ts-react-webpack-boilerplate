@@ -10,29 +10,25 @@ const pathParamsStoreTemplate = (
   name,
   path,
   keys
-) => `import {Request} from 'express';
-import {config} from 'config';
-import {initStore, fetchWrapper} from 'stores/base';
-import {${name.pascal}State, ${name.pascal}Params} from 'stores/${name.lower}';
+) => `import { Request } from 'express';
+import { config } from 'config';
+import { initStore, fetchWrapper } from 'stores/base';
+import { ${name.pascal}State, ${name.pascal}Params } from 'stores/${name.lower}';
 
 export const store = initStore<${name.pascal}State>();
 
-export const fetch = async ({ params }: Request): Promise<${
-  name.pascal
-}State> => {
-  let {url} = config.stores.${name.camel};
-  const path = params['0'];
-
-  const result = path.match(/${buildPathParamRegex(path, keys)}/);
-  const pathParams: ${name.pascal}Params = result?.groups ? {
+export const serverFetch = async ({
+  params
+}: Request): Promise<${name.pascal}State> => {
+  const result = params['0'].match(/${buildPathParamRegex(path, keys)}/);
+  const pathParams: ${name.pascal}Params | undefined = result?.groups && {
     ${keys.map(({ name }) => `${name}: result.groups.${name}`)}
-  }: {
-    ${keys.map(({ name }) => `${name}: ''`)}
-  }
+  };
 
-  ${keys.map(({ name }) => `url = url.replace(':${name}', pathParams.${name})`)}
-
-  return await fetchWrapper<${name.pascal}State>(url);
+  return await fetchWrapper<${name.pascal}State>(
+    config.stores.${name.camel}.url,
+    pathParams
+  );
 };
 `;
 

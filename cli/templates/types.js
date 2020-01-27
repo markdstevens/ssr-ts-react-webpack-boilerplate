@@ -14,14 +14,15 @@ const typesTemplate = (name, pathParams = {}) => {
     ? `<${name.pascal}Params>` 
     : '';
 
-  let str = `import {State} from 'stores/base';
-import {RouteComponentProps} from 'react-router-dom';
+  let str = `import { State } from 'stores/base';
+import { RouteComponentProps } from 'react-router-dom';
 
 export type ${name.pascal}Props = RouteComponentProps${paramsTypeStr};
 export type ${name.pascal}State = State<${name.pascal}ApiResponse>;
 `;
   if (pathParams.length > 0) {
     str += `export interface ${name.pascal}Params {
+  [key: string]: string
   ${getPathParams()}
 }
 `;

@@ -21,5 +21,5 @@ export interface Route {
   path?: string;
   exact?: boolean;
   component: PageComponent;
-  fetchInitialData?: (req: Request) => Promise<GenericState>;
+  serverFetch?: (req: Request) => Promise<GenericState>;
 }

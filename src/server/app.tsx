@@ -30,8 +30,8 @@ server.get('*', (req, res, next) => {
     );
   }
 
-  const promise: Promise<GenericState | void> = activeRoute?.fetchInitialData
-    ? activeRoute.fetchInitialData(req)
+  const promise: Promise<GenericState | void> = activeRoute?.serverFetch
+    ? activeRoute.serverFetch(req)
     : Promise.resolve();
 
   promise

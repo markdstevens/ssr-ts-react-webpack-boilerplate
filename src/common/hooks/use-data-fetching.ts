@@ -1,6 +1,5 @@
 import { Dispatch, useEffect, useRef, useState } from 'react';
-import { GenericState } from 'stores/base';
-import { axiosWrapper } from 'utils/axiosWrapper';
+import { GenericState, UrlPathParams, fetchWrapper } from 'stores/base';
 
 export interface UseDataFetchingResponse<T> {
   error: string | null;
@@ -20,6 +19,7 @@ export interface UseDataFetchingResponse<T> {
  * @typeparam {T} The type describing the API response
  *
  * @param {string} dataSource The URI that gets passed directly to axios.get
+ * @param {UrlPathParams | undefined} pathParams An object map of path params
  * @param {T} initialState The initial data from the server, if there is any
  * @param {Dispatch<GenericState>} dispatch Dipatch function that triggers the
  * reducer to update the route's application state
@@ -30,6 +30,7 @@ export interface UseDataFetchingResponse<T> {
  */
 export function useDataFetching<T>(
   dataSource: string,
+  pathParams: UrlPathParams | undefined = {},
   initialState: T,
   dispatch: Dispatch<GenericState>
 ): UseDataFetchingResponse<T> {
@@ -43,10 +44,10 @@ export function useDataFetching<T>(
     if (didMount.current || !initialState) {
       didMount.current = true;
       setState({ error: null, loading: true });
-      axiosWrapper<T>(dataSource)
-        .then(data => {
+      fetchWrapper<T>(dataSource, pathParams)
+        .then(response => {
           setState({ error: null, loading: false });
-          dispatch({ data });
+          dispatch({ data: response?.data });
         })
         .catch(error =>
           setState({
@@ -57,7 +58,7 @@ export function useDataFetching<T>(
     } else {
       didMount.current = true;
     }
-  }, [dataSource]);
+  }, [dataSource, pathParams]);
 
   return state;
 }

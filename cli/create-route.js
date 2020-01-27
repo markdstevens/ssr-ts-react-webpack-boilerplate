@@ -50,7 +50,7 @@ const updateRoutesFile = (config, answers) => {
   let importAlreadyExists = false;
   let indexToInsertImport = -1;
 
-  const newImport = `import {${answers.name.camel}Route} from './${answers.name.camel}';`;
+  const newImport = `import { ${answers.name.camel}Route } from './${answers.name.camel}';`;
   const newRouteEntry = `  ${answers.name.camel}Route,`;
 
   textByLine.forEach((line, i) => {

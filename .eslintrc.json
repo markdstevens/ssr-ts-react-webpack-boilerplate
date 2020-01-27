@@ -41,7 +41,8 @@
     "comma-dangle": "off",
     "require-jsdoc": "off",
     "object-curly-spacing": "off",
-    "no-restricted-imports": ["error", { "patterns": ["../*"] }]
+    "no-restricted-imports": ["error", { "patterns": ["../*"] }],
+    "no-console": "error"
   },
   "settings": {
     "import/resolver": "webpack",
