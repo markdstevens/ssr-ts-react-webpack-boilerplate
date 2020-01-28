@@ -1,6 +1,6 @@
 import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { Store, GenericState } from 'stores/base';
+import { Store } from 'stores/base';
 import { LoadableComponent } from '@loadable/component';
 import { StatefulDynamicRoute, StatefulStaticRoute } from 'routes';
 import { InitialContext } from 'utils/server-data-context';
@@ -26,13 +26,13 @@ import { InitialContext } from 'utils/server-data-context';
  * @return {StatefulDynamicRoute} A HOC component providing initial state data
  * to the wrapped component and its decendents.
  */
-export function withStatefulDynamicRoute<T extends GenericState, R = any>(
+export function withStatefulDynamicRoute<T, R = any>(
   WrappedComponent: LoadableComponent<RouteComponentProps<R>>,
   routeStore: Store<T>
 ): StatefulDynamicRoute<R> {
   const Wrapper = (props: RouteComponentProps<R>): JSX.Element => (
     <InitialContext.Consumer>
-      {serverData => (
+      {(serverData): JSX.Element => (
         <routeStore.CustomProvider
           initialState={serverData as T}
           reducer={routeStore.reducer}
