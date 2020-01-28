@@ -1,5 +1,5 @@
 import loadable from '@loadable/component';
-import {Route} from './types';
+import { Route } from './types';
 
 export const homeRoute: Route = {
   name: 'home',
