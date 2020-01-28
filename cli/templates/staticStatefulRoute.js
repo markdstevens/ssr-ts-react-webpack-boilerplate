@@ -4,7 +4,7 @@ import { Route } from './types';
 import {
   serverFetch,
   store,
-  ${answers.name.camel}State
+  ${answers.name.pascal}State
 } from 'stores/${answers.name.lower}';
 import { withStatefulStaticRoute } from 'components/hocs';
 
@@ -13,8 +13,8 @@ export const ${answers.name.camel}Route: Route = {
   path: '${answers.path}',
   exact: true,
   serverFetch,
-  component: withStatefulStaticRoute<${answers.name.camel}State>(
-    loadable(() => import('../pages/${answers.name.camel}')),
+  component: withStatefulStaticRoute<${answers.name.pascal}State>(
+    loadable(() => import('../pages/${answers.name.pascal}')),
     store
   )
 };

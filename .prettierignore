@@ -4,3 +4,4 @@ src/public/
 cli/
 dist/
 node_modules/
+coverage/
