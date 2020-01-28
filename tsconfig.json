@@ -26,7 +26,8 @@
       "styles/*": ["common/styles/*"],
       "images/*": ["common/images/*"]
     },
-    "typeRoots": ["./src/common/types"]
+    "typeRoots": ["./node_modules/@types", "./src/common/types"],
+    "types": ["jest"]
   },
-  "include": ["./src/**/*"]
+  "include": ["./src/**/*", "./test/**/*"]
 }

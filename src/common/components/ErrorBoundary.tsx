@@ -1,4 +1,4 @@
-import React, { Component, FunctionComponent, ReactNode } from 'react';
+import React, { Component, ReactNode, FunctionComponent } from 'react';
 import { logger } from 'utils/logger';
 import { Event } from 'utils/event';
 
@@ -7,7 +7,7 @@ interface ErrorBoundaryState {
 }
 
 interface ErrorBoundaryProps {
-  Fallback?: FunctionComponent;
+  fallback?: FunctionComponent;
   children: ReactNode;
 }
 
@@ -34,7 +34,10 @@ interface ErrorInfo {
  *     <ComponentThatFailsDuringRender />
  *   </ErrorBoundary>
  */
-class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+export class ErrorBoundary extends Component<
+  ErrorBoundaryProps,
+  ErrorBoundaryState
+> {
   /**
    * @param {ErrorBoundaryProps} props takes two props: Fallback and children.
    * The children prop represents the react component tree that the
@@ -78,13 +81,17 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
    * @return {JSX.Element | ReactNode} The JSX of the children or the fallback
    */
   render(): JSX.Element | ReactNode {
-    const { children, Fallback } = this.props;
+    const { children, fallback: Fallback } = this.props;
     if (this.state.hasError) {
-      return Fallback ? <Fallback /> : <h1>Something went wrong.</h1>;
+      return Fallback ? (
+        <Fallback />
+      ) : (
+        <div data-tid="error-boundary">
+          <h1>Something went wrong.</h1>
+        </div>
+      );
     }
 
     return children;
   }
 }
-
-export { ErrorBoundary };

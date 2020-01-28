@@ -1,9 +1,9 @@
 import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { Store } from 'stores/base';
-import { useInitialData } from 'components/App';
 import { LoadableComponent } from '@loadable/component';
 import { StatefulDynamicRoute, StatefulStaticRoute } from 'routes';
+import { InitialContext } from 'utils/server-data-context';
 
 /**
  * @description StatefulRoute
@@ -31,12 +31,16 @@ export function withStatefulDynamicRoute<T, R = any>(
   routeStore: Store<T>
 ): StatefulDynamicRoute<R> {
   const Wrapper = (props: RouteComponentProps<R>): JSX.Element => (
-    <routeStore.CustomProvider
-      initialState={useInitialData() as T}
-      reducer={routeStore.reducer}
-    >
-      <WrappedComponent {...props} />
-    </routeStore.CustomProvider>
+    <InitialContext.Consumer>
+      {(serverData): JSX.Element => (
+        <routeStore.CustomProvider
+          initialState={serverData as T}
+          reducer={routeStore.reducer}
+        >
+          <WrappedComponent {...props} />
+        </routeStore.CustomProvider>
+      )}
+    </InitialContext.Consumer>
   );
   Wrapper.displayName = 'StatefulRoute';
   return Wrapper;
@@ -66,12 +70,16 @@ export function withStatefulStaticRoute<T>(
   routeStore: Store<T>
 ): StatefulStaticRoute<T> {
   const Wrapper = (props: any): JSX.Element => (
-    <routeStore.CustomProvider
-      initialState={useInitialData() as T}
-      reducer={routeStore.reducer}
-    >
-      <WrappedComponent {...props} />
-    </routeStore.CustomProvider>
+    <InitialContext.Consumer>
+      {serverData => (
+        <routeStore.CustomProvider
+          initialState={serverData as T}
+          reducer={routeStore.reducer}
+        >
+          <WrappedComponent {...props} />
+        </routeStore.CustomProvider>
+      )}
+    </InitialContext.Consumer>
   );
   Wrapper.displayName = 'StatefulRoute';
   return Wrapper;

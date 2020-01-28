@@ -1,39 +1,17 @@
-import React, {
-  FunctionComponent,
-  Profiler,
-  StrictMode,
-  createContext,
-  useContext
-} from 'react';
+import React, { FunctionComponent, Profiler, StrictMode } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { routes } from 'routes';
 import { GenericState } from 'stores/base';
 import { ErrorBoundary } from 'components/ErrorBoundary';
 import { logger } from 'utils/logger';
-
-const initialRender = (initial: boolean): (() => boolean) => {
-  let initialRender = initial;
-  return (): boolean => {
-    const val = initialRender;
-    initialRender = false;
-    return val;
-  };
-};
-
-const isInitialRender = initialRender(true);
-
-const InitialContext = createContext(null);
-export const useInitialData = (): GenericState | null => {
-  const data: GenericState | null = useContext(InitialContext);
-  return isInitialRender() ? data : null;
-};
+import { InitialContext } from 'utils/server-data-context';
 
 export const App: FunctionComponent<GenericState> = ({
-  data
+  data: initialServerData
 }: GenericState) => (
   <StrictMode>
     <main>
-      <InitialContext.Provider value={data}>
+      <InitialContext.Provider value={initialServerData}>
         <Switch>
           {routes.map(({ path, exact, component: Page, name }) => (
             <Route

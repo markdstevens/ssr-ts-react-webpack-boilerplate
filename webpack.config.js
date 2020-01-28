@@ -127,7 +127,7 @@ module.exports = (env = {}) => {
   }
 
   const clientConfig = merge.smart(baseConfig, {
-    entry: './src/client/Entry.tsx',
+    entry: './src/client/client-entry.tsx',
     target: 'web',
     output: {
       filename: 'client.js',
@@ -176,7 +176,7 @@ module.exports = (env = {}) => {
   );
 
   const serverConfig = merge.smart(baseConfig, {
-    entry: './src/server/app.tsx',
+    entry: './src/server/server-entry.tsx',
     target: 'node',
     externals: [nodeExternals()],
     output: {

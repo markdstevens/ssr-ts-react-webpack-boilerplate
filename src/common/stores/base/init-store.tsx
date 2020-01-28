@@ -23,11 +23,8 @@ export function initStore<T>(): Store<T> {
         {children}
       </CustomContext.Provider>
     ),
-    useCustomState: (): Reducer<T> => {
-      return useContext(CustomContext) as Reducer<T>;
-    },
-    reducer: (prevState: T, nextState: T) =>
-      Object.assign({}, prevState, nextState)
+    useCustomState: (): Reducer<T> => useContext(CustomContext) as Reducer<T>,
+    reducer: (prev: T, next: T) => Object.assign({}, prev, next)
   };
   store.CustomProvider.displayName = 'CustomProvider';
   return store;
