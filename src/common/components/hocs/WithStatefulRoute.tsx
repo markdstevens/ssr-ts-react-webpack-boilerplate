@@ -1,9 +1,39 @@
 import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { Store } from 'stores/base';
+import { Store, GenericState } from 'stores/base';
 import { LoadableComponent } from '@loadable/component';
 import { StatefulDynamicRoute, StatefulStaticRoute } from 'routes';
 import { InitialContext } from 'utils/server-data-context';
+import { useDataFetching, DataFetchingProps } from 'hooks/use-data-fetching';
+
+interface DataFetcherProps<T, R = void> {
+  WrappedComponent:
+    | LoadableComponent<DataFetchingProps<T>>
+    | LoadableComponent<RouteComponentProps<R> & DataFetchingProps<T>>;
+  routeStore: Store<T>;
+  url: string;
+  pathParams?: any;
+  props: RouteComponentProps<R>;
+}
+
+function DataFetcher<T, R>({
+  WrappedComponent,
+  routeStore,
+  url,
+  pathParams,
+  props
+}: DataFetcherProps<T, R>): JSX.Element {
+  const [state, dispatch] = routeStore.useCustomState();
+  const { loading, error } = useDataFetching<T>(
+    url,
+    pathParams ?? {},
+    state,
+    dispatch as React.Dispatch<GenericState>
+  );
+
+  return <WrappedComponent {...{ state, loading, error }} {...props} />;
+}
+DataFetcher.displayName = 'DataFetcher';
 
 /**
  * @description StatefulRoute
@@ -21,27 +51,40 @@ import { InitialContext } from 'utils/server-data-context';
  * that is being wrapped
  * @param {Store} routeStore The data store associated with the wrapped
  * component
- * @param {string} profilerId A unique ID to be identify the wrapped component
+ * @param {string} url The config object for the wrapped route
  *
  * @return {StatefulDynamicRoute} A HOC component providing initial state data
  * to the wrapped component and its decendents.
  */
 export function withStatefulDynamicRoute<T, R = any>(
-  WrappedComponent: LoadableComponent<RouteComponentProps<R>>,
-  routeStore: Store<T>
+  WrappedComponent: LoadableComponent<
+    RouteComponentProps<R> & DataFetchingProps<T>
+  >,
+  routeStore: Store<T>,
+  url: string
 ): StatefulDynamicRoute<R> {
-  const Wrapper = (props: RouteComponentProps<R>): JSX.Element => (
-    <InitialContext.Consumer>
-      {(serverData): JSX.Element => (
-        <routeStore.CustomProvider
-          initialState={serverData as T}
-          reducer={routeStore.reducer}
-        >
-          <WrappedComponent {...props} />
-        </routeStore.CustomProvider>
-      )}
-    </InitialContext.Consumer>
-  );
+  const Wrapper = (props: RouteComponentProps<R>): JSX.Element => {
+    return (
+      <InitialContext.Consumer>
+        {(serverData): JSX.Element => {
+          return (
+            <routeStore.CustomProvider
+              initialState={serverData as T}
+              reducer={routeStore.reducer}
+            >
+              <DataFetcher
+                WrappedComponent={WrappedComponent}
+                routeStore={routeStore}
+                url={url}
+                pathParams={props?.match?.params}
+                props={props}
+              />
+            </routeStore.CustomProvider>
+          );
+        }}
+      </InitialContext.Consumer>
+    );
+  };
   Wrapper.displayName = 'StatefulRoute';
   return Wrapper;
 }
@@ -60,23 +103,29 @@ export function withStatefulDynamicRoute<T, R = any>(
  * that is being wrapped
  * @param {Store} routeStore The data store associated with the wrapped
  * component
- * @param {string} profilerId A unique ID to be identify the wrapped component
+ * @param {string} url The config object for the wrapped route
  *
  * @return {StatefulStaticRoute} A HOC component providing initial state data
  * to the wrapped component and its decendents.
  */
 export function withStatefulStaticRoute<T>(
-  WrappedComponent: LoadableComponent<void>,
-  routeStore: Store<T>
-): StatefulStaticRoute<T> {
-  const Wrapper = (props: any): JSX.Element => (
+  WrappedComponent: LoadableComponent<DataFetchingProps<T>>,
+  routeStore: Store<T>,
+  url: string
+): StatefulStaticRoute {
+  const Wrapper = (props: RouteComponentProps): JSX.Element => (
     <InitialContext.Consumer>
-      {serverData => (
+      {(serverData): JSX.Element => (
         <routeStore.CustomProvider
           initialState={serverData as T}
           reducer={routeStore.reducer}
         >
-          <WrappedComponent {...props} />
+          <DataFetcher
+            WrappedComponent={WrappedComponent}
+            routeStore={routeStore}
+            url={url}
+            props={props}
+          />
         </routeStore.CustomProvider>
       )}
     </InitialContext.Consumer>

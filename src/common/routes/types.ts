@@ -7,7 +7,7 @@ export type StatefulDynamicRoute<T = any> = (
   props: RouteComponentProps<T>
 ) => JSX.Element;
 
-export type StatefulStaticRoute<T = any> = (props: T) => JSX.Element;
+export type StatefulStaticRoute = (props: RouteComponentProps) => JSX.Element;
 
 export type StatelessRoute = LoadableComponent<any>;
 

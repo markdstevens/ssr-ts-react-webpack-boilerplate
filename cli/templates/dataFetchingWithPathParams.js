@@ -1,20 +1,8 @@
-const dataFetchingPageTemplateWithPathParams = (name, keys) => {
-  return `import React, { FunctionComponent } from 'react';
-import { ${name.pascal}State, ${name.pascal}Props, store } from 'stores/${name.lower}';
-import { useDataFetching } from 'hooks/use-data-fetching';
-import { config } from 'config';
+const dataFetchingPageTemplateWithPathParams = name => {
+  return `import React, { FC } from 'react';
+import { ${name.pascal}Props } from 'stores/${name.lower}';
 
-const ${name.pascal}: FunctionComponent<${name.pascal}Props> = ({
-  match: { params }
-}: ${name.pascal}Props) => {
-  const [state, dispatch] = store.useCustomState();
-  const { loading, error } = useDataFetching<${name.pascal}State>(
-    config.stores.${name.camel}.url,
-    params,
-    state,
-    dispatch
-  );
-
+const ${name.pascal}: FC<${name.pascal}Props> = ({ state, loading, error }: ${name.pascal}Props) => {
   if (loading || error) {
     return <div>{loading ? 'Loading...' : error}</div>;
   }

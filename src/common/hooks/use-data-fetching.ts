@@ -1,5 +1,11 @@
 import { Dispatch, useEffect, useRef, useState } from 'react';
-import { GenericState, UrlPathParams, fetchWrapper } from 'stores/base';
+import { GenericState, UrlPathParams, fetchWrapper, State } from 'stores/base';
+
+export interface DataFetchingProps<T> {
+  state: T;
+  loading: boolean;
+  error: string | null;
+}
 
 export interface UseDataFetchingResponse<T> {
   error: string | null;
@@ -31,7 +37,7 @@ export interface UseDataFetchingResponse<T> {
 export function useDataFetching<T>(
   dataSource: string,
   pathParams: UrlPathParams | undefined = {},
-  initialState: T,
+  initialState: State<T>,
   dispatch: Dispatch<GenericState>
 ): UseDataFetchingResponse<T> {
   const didMount = useRef(false);

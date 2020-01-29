@@ -10,19 +10,25 @@ const typesTemplate = (name, pathParams = {}) => {
           return str;
         }).join('');
 
-  const paramsTypeStr = Object.keys(pathParams).length 
-    ? `<${name.pascal}Params>` 
-    : '';
+  const propType = Object.keys(pathParams).length 
+    ? `RouteComponentProps<${name.pascal}Params> & DataFetchingProps<${name.pascal}State>` 
+    : `DataFetchingProps<${name.pascal}State>`;
 
   let str = `import { State } from 'stores/base';
-import { RouteComponentProps } from 'react-router-dom';
+import { DataFetchingProps } from 'hooks/use-data-fetching';
+`;
 
-export type ${name.pascal}Props = RouteComponentProps${paramsTypeStr};
+  if (pathParams.length) {
+    str += "import { RouteComponentProps } from 'react-router-dom';\n";
+  }
+
+  str += `
+export type ${name.pascal}Props = ${propType};
 export type ${name.pascal}State = State<${name.pascal}ApiResponse>;
 `;
   if (pathParams.length > 0) {
     str += `export interface ${name.pascal}Params {
-  [key: string]: string
+  [key: string]: string;
   ${getPathParams()}
 }
 `;
