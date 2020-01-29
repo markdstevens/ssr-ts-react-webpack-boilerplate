@@ -1,8 +1,6 @@
 import { Route } from 'routes';
 import { homeRoute } from './home';
 import { defaultRoute } from './defaultRoute';
-import { jokeRoute } from './joke';
-import { pokemonRoute } from './pokemon';
 
 /**
  * @description
@@ -22,8 +20,6 @@ import { pokemonRoute } from './pokemon';
  *   DONT MANUALLY ALTER THIS LIST UNLESS YOU KNOW WHAT YOU'RE DOING
  */
 export const routes: Route[] = [
-  pokemonRoute,
-  jokeRoute,
   homeRoute,
   defaultRoute
 ];
