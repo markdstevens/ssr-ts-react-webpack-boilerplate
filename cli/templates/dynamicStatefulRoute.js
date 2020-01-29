@@ -8,6 +8,7 @@ import {
   ${answers.name.pascal}Params
 } from 'stores/${answers.name.lower}';
 import { withStatefulDynamicRoute } from 'components/hocs';
+import { config } from 'config/base';
 
 export const ${answers.name.camel}Route: Route = {
   name: '${answers.name.exact}',
@@ -16,7 +17,8 @@ export const ${answers.name.camel}Route: Route = {
   serverFetch,
   component: withStatefulDynamicRoute<${answers.name.pascal}State, ${answers.name.pascal}Params>(
     loadable(() => import('../pages/${answers.name.camel}')),
-    store
+    store,
+    config.stores.${answers.name.lower}.url
   )
 };
 `);
