@@ -34,10 +34,7 @@ interface ErrorInfo {
  *     <ComponentThatFailsDuringRender />
  *   </ErrorBoundary>
  */
-export class ErrorBoundary extends Component<
-  ErrorBoundaryProps,
-  ErrorBoundaryState
-> {
+export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   /**
    * @param {ErrorBoundaryProps} props takes two props: Fallback and children.
    * The children prop represents the react component tree that the

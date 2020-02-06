@@ -4,11 +4,13 @@ import express from 'express';
 import { renderToString } from 'react-dom/server';
 import { App } from 'components/App';
 import { StaticRouter, matchPath } from 'react-router-dom';
-import { Route, routes } from 'routes';
-import { GenericState } from 'stores/base';
+import { Controller } from 'common/controllers';
+import { GenericState } from 'utils/store';
 import { ChunkExtractor } from '@loadable/server';
 import { logger } from 'utils/logger';
 import { Event } from 'utils/event';
+import { controllers } from 'controllers';
+import { config } from 'config/base';
 
 const statsFile = path.resolve('dist/loadable-stats.json');
 
@@ -20,18 +22,16 @@ server.use(express.static('dist'));
 server.get('*', (req, res, next) => {
   const extractor = new ChunkExtractor({ statsFile });
 
-  const activeRoute: Route | null =
-    routes.find(route => matchPath(req.url, route)) || null;
+  const activeController: Controller | undefined = controllers.find(controller =>
+    matchPath(req.url, controller)
+  );
 
-  if (activeRoute?.name === '404') {
-    logger.event(
-      Event.NO_ROUTE_FOUND,
-      `error='no route found that matches ${req.url}'`
-    );
+  if (!activeController) {
+    logger.event(Event.NO_ROUTE_FOUND, `error='no route found that matches ${req.url}'`);
   }
 
-  const promise: Promise<GenericState | void> = activeRoute?.serverFetch
-    ? activeRoute.serverFetch(req)
+  const promise: Promise<GenericState | void> = activeController?.serverFetch
+    ? activeController.serverFetch(req)
     : Promise.resolve();
 
   promise
@@ -51,8 +51,8 @@ server.get('*', (req, res, next) => {
       ];
 
       const initialDataScript = `
-      <script>window.__INITIAL_STATE__=${JSON.stringify(data)}</script>
-    `.trim();
+        <script>window.__INITIAL_STATE__=${JSON.stringify(data)}</script>
+      `.trim();
 
       res.render('index', {
         htmlWebpackPlugin: {
@@ -70,4 +70,4 @@ server.get('*', (req, res, next) => {
     .catch(next);
 });
 
-server.listen(3000, () => logger.info('App listening on port 3000!'));
+server.listen(config.port, () => logger.info('App listening on port 3000!'));

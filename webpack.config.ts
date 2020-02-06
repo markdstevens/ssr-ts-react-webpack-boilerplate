@@ -1,27 +1,39 @@
-const path = require('path');
-const webpack = require('webpack');
-const nodeExternals = require('webpack-node-externals');
-const merge = require('webpack-merge');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const LoadablePlugin = require('@loadable/webpack-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
-const { TsconfigPathsPlugin } = require('tsconfig-paths-webpack-plugin');
-const WorkboxWebpackPlugin = require('workbox-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const NodemonPlugin = require('nodemon-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
-const WebpackBundleSizeLimitPlugin = require('webpack-bundle-size-limit-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+import path from 'path';
+import webpack from 'webpack';
+import nodeExternals from 'webpack-node-externals';
+import merge from 'webpack-merge';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import OptimizeCssAssetsPlugin from 'optimize-css-assets-webpack-plugin';
+import LoadablePlugin from '@loadable/webpack-plugin';
+import TerserPlugin from 'terser-webpack-plugin';
+import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin';
+import WorkboxWebpackPlugin from 'workbox-webpack-plugin';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
+import NodemonPlugin from 'nodemon-webpack-plugin';
+import { CleanWebpackPlugin } from 'clean-webpack-plugin';
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+import WebpackBundleSizeLimitPlugin from 'webpack-bundle-size-limit-plugin';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 
-module.exports = (env = {}) => {
-  const isDev =
-    process.env.NODE_ENV === 'development' || (env && env.dev) || false;
+/**
+ * workaround to allow typescript integration with the webpack config
+ *
+ * https://github.com/dividab/tsconfig-paths-webpack-plugin/issues/17#issuecomment-410117974
+ */
+delete process.env.TS_NODE_PROJECT;
 
+export interface WebpackEnvironment {
+  profileClient?: boolean;
+  profileServer?: boolean;
+  nostart?: boolean;
+  dev?: boolean;
+}
+
+export default (env: WebpackEnvironment = {}): webpack.Configuration[] => {
+  const isDev = process.env.NODE_ENV === 'development' || env?.dev || false;
   const isProfiling = env.profileClient || env.profileServer;
 
-  const baseConfig = {
+  const baseConfig: webpack.Configuration = {
     mode: isDev ? 'development' : 'production',
     watch: isDev && !env.nostart && !isProfiling,
     output: {
@@ -61,7 +73,7 @@ module.exports = (env = {}) => {
               test: /\.module\.s?css$/,
 
               /**
-               * ! Remember: loaders are processed from right to left
+               * ! Remember: loaders are processed from right to left (or bottom up)
                */
               use: [
                 MiniCssExtractPlugin.loader,
@@ -106,8 +118,7 @@ module.exports = (env = {}) => {
       new MiniCssExtractPlugin({
         filename: isDev ? '[name].css' : '[name]-[contenthash].css'
       })
-    ],
-    stats: 'errors-warnings'
+    ]
   };
 
   if (!isDev) {
@@ -127,13 +138,11 @@ module.exports = (env = {}) => {
   }
 
   const clientConfig = merge.smart(baseConfig, {
-    entry: './src/client/client-entry.tsx',
+    entry: path.join(__dirname, './src/client/client-entry.tsx'),
     target: 'web',
     output: {
       filename: 'client.js',
-      chunkFilename: isDev
-        ? `[name].client.bundle.js`
-        : `[name].client.bundle.[chunkhash].js`
+      chunkFilename: isDev ? `[name].client.bundle.js` : `[name].client.bundle.[chunkhash].js`
     },
     plugins: [
       new webpack.DefinePlugin({ __BROWSER__: true }),
@@ -159,7 +168,7 @@ module.exports = (env = {}) => {
 
   if (isDev) {
     clientConfig.devtool = 'cheap-module-eval-source-map';
-    clientConfig.plugins.push(
+    clientConfig?.plugins?.push(
       new CleanWebpackPlugin({
         cleanOnceBeforeBuildPatterns: ['!server*.js'],
         cleanAfterEveryBuildPatterns: ['!server*.js'],
@@ -181,9 +190,7 @@ module.exports = (env = {}) => {
     externals: [nodeExternals()],
     output: {
       filename: 'server.js',
-      chunkFilename: isDev
-        ? `[name].server.bundle.js`
-        : `[name].server.bundle.[chunkhash].js`
+      chunkFilename: isDev ? `[name].server.bundle.js` : `[name].server.bundle.[chunkhash].js`
     },
     plugins: [
       new webpack.DefinePlugin({ __BROWSER__: false }),

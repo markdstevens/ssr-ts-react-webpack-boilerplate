@@ -1,5 +1,8 @@
 dist
 node_modules
-generated
+__generated__
 webpack.config.js
 cli
+jest.config.js
+jest.setup.js
+nodemon.json

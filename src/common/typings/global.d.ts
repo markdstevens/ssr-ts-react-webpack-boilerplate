@@ -1,4 +1,4 @@
-import { GenericState } from 'stores/base';
+import { GenericState } from 'utils/store';
 
 interface ServiceWorkerRoute {
   url: string;
