@@ -1,3 +1,0 @@
-interface JokeApiResponse {
-  joke: string;
-}

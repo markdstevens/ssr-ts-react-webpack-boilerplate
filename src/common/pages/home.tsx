@@ -1,10 +1,6 @@
-import React, { FunctionComponent } from 'react';
-import { Link, RouteComponentProps } from 'react-router-dom';
+import React, { FC } from 'react';
+import { RouteComponentProps } from 'react-router-dom';
 
-const Home: FunctionComponent<RouteComponentProps> = () => (
-  <div>
-    <Link to="/pokemon/lugia">Lugia</Link>
-  </div>
-);
+const Home: FC<RouteComponentProps> = () => <div>Hello, World!</div>;
 
 export default Home;
