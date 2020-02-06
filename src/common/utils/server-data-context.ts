@@ -1,4 +1,5 @@
 import { createContext } from 'react';
-import { GenericState } from 'stores/base';
+import { GenericState } from 'utils/store';
 
-export const InitialContext = createContext<GenericState>({ data: null });
+export const ServerDataContext = createContext<GenericState>({ data: null });
+ServerDataContext.displayName = 'ServerDataContext';

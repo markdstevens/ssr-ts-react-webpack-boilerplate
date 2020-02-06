@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, RouteComponentProps } from 'react-router-dom';
 
-const Home: FunctionComponent<void> = () => (
+const Home: FunctionComponent<RouteComponentProps> = () => (
   <div>
     <Link to="/pokemon/lugia">Lugia</Link>
   </div>

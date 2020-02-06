@@ -1,26 +1,25 @@
 import React, { FunctionComponent, Profiler, StrictMode } from 'react';
 import { Route, Switch } from 'react-router-dom';
-import { routes } from 'routes';
-import { GenericState } from 'stores/base';
-import { ErrorBoundary } from 'components/ErrorBoundary';
+import { GenericState } from 'utils/store';
+import { controllers } from 'controllers';
+import { ErrorBoundary } from 'components/common/ErrorBoundary';
 import { logger } from 'utils/logger';
-import { InitialContext } from 'utils/server-data-context';
+import { ServerDataContext } from 'utils/server-data-context';
+import { RouteComponentProps } from 'react-router-dom';
 
-export const App: FunctionComponent<GenericState> = ({
-  data: initialServerData
-}: GenericState) => (
+export const App: FunctionComponent<GenericState> = ({ data: initialServerData }) => (
   <StrictMode>
     <main>
-      <InitialContext.Provider value={initialServerData}>
+      <ServerDataContext.Provider value={initialServerData}>
         <Switch>
-          {routes.map(({ path, exact, component: Page, name }) => (
+          {controllers.map(({ path, exact, page: Page }) => (
             <Route
-              key={name}
+              key={path}
               path={path}
               exact={exact}
-              component={(props: any): JSX.Element => (
+              component={(props: RouteComponentProps): JSX.Element => (
                 <ErrorBoundary>
-                  <Profiler id={name} onRender={logger.profile}>
+                  <Profiler id={path} onRender={logger.profile}>
                     <Page {...props} />
                   </Profiler>
                 </ErrorBoundary>
@@ -28,9 +27,8 @@ export const App: FunctionComponent<GenericState> = ({
             />
           ))}
         </Switch>
-      </InitialContext.Provider>
+      </ServerDataContext.Provider>
     </main>
   </StrictMode>
 );
-
 App.displayName = 'App';

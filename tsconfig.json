@@ -21,12 +21,14 @@
       "hooks/*": ["common/hooks/*"],
       "pages/*": ["common/pages/*"],
       "stores/*": ["common/stores/*"],
-      "routes": ["common/routes/index.ts"],
+      "controllers/*": ["common/controllers/*"],
+      "controllers": ["common/controllers/index.ts"],
       "utils/*": ["common/utils/*"],
       "styles/*": ["common/styles/*"],
-      "images/*": ["common/images/*"]
+      "images/*": ["common/images/*"],
+      "hocs/*": ["common/hocs/*"]
     },
-    "typeRoots": ["./node_modules/@types", "./src/common/types"],
+    "typeRoots": ["./src/common/typings", "./node_modules/@types"],
     "types": ["jest"]
   },
   "include": ["./src/**/*", "./test/**/*"]
