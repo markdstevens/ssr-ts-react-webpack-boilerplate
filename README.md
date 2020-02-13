@@ -14,7 +14,7 @@ A lightweight template repo for creating performant react apps
 ```
 git clone git@github.com:markdstevens/ssr-ts-react-webpack-boilerplate.git
 cd ssr-ts-react-webpack-boilerplate
-pnpm i
+yarn
 ```
 
 To create a simple static route, we only need to add two files:
@@ -52,7 +52,7 @@ In `src/common/controllers/init.ts`, import your new controller and add it to th
 Now, build the project via
 
 ```
-pnpm run start:dev
+yarn start:dev
 ```
 
 You should see some webpack output. In the dist/ directory, you'll see two files of interest:

@@ -1,5 +1,5 @@
 module.exports = {
-  bundles: [
+  client: [
     {
       name: 'client.js',
       maxSize: '50K'
@@ -26,7 +26,25 @@ module.exports = {
     },
     {
       name: 'service-worker.js',
-      maxSize: '1.08 Kb'
+      maxSize: '559 b'
+    }
+  ],
+  server: [
+    {
+      name: 'server.js',
+      maxSize: '11Kb'
+    },
+    {
+      name: 'loadable-stats.json',
+      maxSize: '5K'
+    },
+    {
+      name: 'manifest.json',
+      maxSize: '5K'
+    },
+    {
+      name: 'pages-home.server.bundle.*.js',
+      maxSize: '5K'
     }
   ]
 };

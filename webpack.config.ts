@@ -12,7 +12,7 @@ import CopyWebpackPlugin from 'copy-webpack-plugin';
 import NodemonPlugin from 'nodemon-webpack-plugin';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
-import WebpackBundleSizeLimitPlugin from 'webpack-bundle-size-limit-plugin';
+import { WebpackBundleSizeLimitPlugin } from 'webpack-bundle-size-limit-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 
 /**
@@ -158,10 +158,10 @@ export default (env: WebpackEnvironment = {}): webpack.Configuration[] => {
   if (!isDev) {
     clientConfig.plugins.push(
       new WebpackBundleSizeLimitPlugin({
-        config: path.join(__dirname, 'bundle-size-client.conf.js'),
+        config: path.join(__dirname, 'bundle-size.conf.js'),
         include: ['.css', '.js'],
         enforceForAllBundles: true,
-        decimalPlaces: 2
+        key: 'client'
       })
     );
   }
@@ -223,9 +223,10 @@ export default (env: WebpackEnvironment = {}): webpack.Configuration[] => {
   } else {
     serverConfig.plugins.push(
       new WebpackBundleSizeLimitPlugin({
-        config: path.join(__dirname, 'bundle-size-server.conf.js'),
+        config: path.join(__dirname, 'bundle-size.conf.js'),
         include: ['.js', '.json'],
-        enforceForAllBundles: true
+        enforceForAllBundles: true,
+        key: 'server'
       })
     );
   }
