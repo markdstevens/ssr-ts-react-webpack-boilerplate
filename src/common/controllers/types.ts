@@ -23,3 +23,9 @@ export interface Controller<T = any, R = any> {
   clientFetch?: ClientFetch<T>;
   init: () => Controller<T, R>;
 }
+
+interface ControllerTwo {
+  path: string;
+  exact: boolean;
+  isApi: boolean;
+}

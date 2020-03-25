@@ -1,4 +1,4 @@
-import React, { FunctionComponent, Profiler, StrictMode } from 'react';
+import React, { FunctionComponent, Profiler } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { GenericState } from 'utils/store';
 import { controllers } from 'controllers';
@@ -6,10 +6,17 @@ import { ErrorBoundary } from 'components/common/ErrorBoundary';
 import { logger } from 'utils/logger';
 import { ServerDataContext } from 'utils/server-data-context';
 import { RouteComponentProps } from 'react-router-dom';
+import { AppBar, Toolbar, Button, Container } from '@material-ui/core';
+import { PageWrapper } from './PageWrapper';
 
 export const App: FunctionComponent<GenericState> = ({ data: initialServerData }) => (
-  <StrictMode>
-    <main>
+  <PageWrapper>
+    <AppBar position="static">
+      <Toolbar>
+        <Button color="inherit">Login</Button>
+      </Toolbar>
+    </AppBar>
+    <Container maxWidth="lg">
       <ServerDataContext.Provider value={initialServerData}>
         <Switch>
           {controllers.map(({ path, exact, page: Page }) => (
@@ -28,7 +35,7 @@ export const App: FunctionComponent<GenericState> = ({ data: initialServerData }
           ))}
         </Switch>
       </ServerDataContext.Provider>
-    </main>
-  </StrictMode>
+    </Container>
+  </PageWrapper>
 );
 App.displayName = 'App';

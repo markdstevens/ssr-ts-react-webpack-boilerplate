@@ -32,7 +32,7 @@ module.exports = {
   server: [
     {
       name: 'server.js',
-      maxSize: '11Kb'
+      maxSize: '11.6Kb'
     },
     {
       name: 'loadable-stats.json',
