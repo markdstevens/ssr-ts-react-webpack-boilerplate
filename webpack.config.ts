@@ -177,12 +177,14 @@ export default (env: WebpackEnvironment = {}): webpack.Configuration[] => {
     );
   }
 
-  clientConfig.plugins.push(
-    new WorkboxWebpackPlugin.InjectManifest({
-      swSrc: './src/public/service-worker.js',
-      swDest: 'service-worker.js'
-    })
-  );
+  if (!isDev) {
+    clientConfig.plugins.push(
+      new WorkboxWebpackPlugin.InjectManifest({
+        swSrc: './src/public/service-worker.js',
+        swDest: 'service-worker.js'
+      })
+    );
+  }
 
   const serverConfig = merge.smart(baseConfig, {
     entry: './src/server/server-entry.tsx',

@@ -13,7 +13,7 @@ export function withStatefulRoute<T, R = any>(
   const Wrapper = (props: RouteComponentProps<R>): JSX.Element => (
     <ServerDataContext.Consumer>
       {(serverData): JSX.Element => (
-        <routeStore.PageStoreContextProvider
+        <routeStore.StoreContextProvider
           initialState={serverData as T}
           reducer={routeStore.reducer}
         >
@@ -23,7 +23,7 @@ export function withStatefulRoute<T, R = any>(
             props={props}
             clientFetch={clientFetch}
           />
-        </routeStore.PageStoreContextProvider>
+        </routeStore.StoreContextProvider>
       )}
     </ServerDataContext.Consumer>
   );

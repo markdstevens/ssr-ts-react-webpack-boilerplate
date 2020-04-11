@@ -15,6 +15,7 @@
     "noImplicitAny": true,
     "strict": true,
     "isolatedModules": true,
+    "skipLibCheck": true,
     "paths": {
       "config": ["config/index.ts"],
       "components/*": ["common/components/*"],
@@ -26,7 +27,8 @@
       "utils/*": ["common/utils/*"],
       "styles/*": ["common/styles/*"],
       "images/*": ["common/images/*"],
-      "hocs/*": ["common/hocs/*"]
+      "hocs/*": ["common/hocs/*"],
+      "i18n": ["common/i18n/index.ts"]
     },
     "typeRoots": ["./src/common/typings", "./node_modules/@types"],
     "types": ["jest"]
