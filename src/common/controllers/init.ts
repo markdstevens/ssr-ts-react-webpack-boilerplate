@@ -1,8 +1,4 @@
 import { Controller } from './types';
-import { HomeController } from './home';
+import HomeController from './home-controller';
 
-const controllers: Controller[] = [HomeController].map(PageController =>
-  new PageController().init()
-);
-
-export { controllers };
+export const controllers: Controller[] = [new HomeController().init()];

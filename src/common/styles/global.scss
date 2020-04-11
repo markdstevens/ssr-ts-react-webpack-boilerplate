@@ -1,8 +1,10 @@
+@import './overrides//theme.scss';
+@import '~bootstrap/scss/bootstrap';
+
 body {
   margin: 0;
 }
 
 main {
-  width: 10em;
   margin: 0 auto;
 }

@@ -11,6 +11,7 @@ import { logger } from 'utils/logger';
 import { Event } from 'utils/event';
 import { controllers } from 'controllers';
 import { config } from 'config/base';
+import createLocaleMiddleware from 'express-locale';
 
 const statsFile = path.resolve('dist/loadable-stats.json');
 
@@ -18,6 +19,7 @@ const server = express();
 server.set('views', 'src/public');
 server.set('view engine', 'ejs');
 server.use(express.static('dist'));
+server.use(createLocaleMiddleware());
 
 server.get('*', (req, res, next) => {
   const extractor = new ChunkExtractor({ statsFile });
@@ -30,11 +32,11 @@ server.get('*', (req, res, next) => {
     logger.event(Event.NO_ROUTE_FOUND, `error='no route found that matches ${req.url}'`);
   }
 
-  const promise: Promise<GenericState | void> = activeController?.serverFetch
+  const dataForPage: Promise<GenericState | void> = activeController?.serverFetch
     ? activeController.serverFetch(req)
     : Promise.resolve();
 
-  promise
+  dataForPage
     .then((data: GenericState | void) => {
       const html = renderToString(
         extractor.collectChunks(
@@ -45,20 +47,18 @@ server.get('*', (req, res, next) => {
       );
 
       const [linkTags, styleTags, scriptTags] = [
-        extractor.getScriptTags(),
+        extractor.getLinkTags(),
         extractor.getStyleTags(),
         extractor.getScriptTags()
       ];
 
-      const initialDataScript = `
-        <script>window.__INITIAL_STATE__=${JSON.stringify(data)}</script>
-      `.trim();
-
       res.render('index', {
+        isDev: __DEV__,
+        data: JSON.stringify(data),
         htmlWebpackPlugin: {
           options: {
             title: 'React App',
-            scriptTags: initialDataScript + scriptTags,
+            scriptTags,
             linkTags,
             styleTags,
             html

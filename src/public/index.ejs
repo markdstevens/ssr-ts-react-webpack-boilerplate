@@ -14,13 +14,16 @@
   <body>
     <div id="app"><% htmlWebpackPlugin.options.html %></div>
     <noscript>Uh oh! Your browser does not support JavaScript!</noscript>
+    <script>window.__INITIAL_STATE__= <%- data %></script>
+    <%- htmlWebpackPlugin.options.scriptTags %>
+    <% if (!isDev) { %>
+      <script>
+        if ('serviceWorker' in navigator) {
+          window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/service-worker.js');
+          });
+        }
+      </script>
+    <% } %>
   </body>
-  <%- htmlWebpackPlugin.options.scriptTags %>
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/service-worker.js');
-      });
-    }
-  </script>
 </html>

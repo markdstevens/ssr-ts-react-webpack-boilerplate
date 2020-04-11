@@ -9,14 +9,14 @@ export type GenericState = State<any>;
 export type Reducer<T> = [T, Dispatch<T>];
 export type ReducerFunc<T, R> = (previousState: T, action: R) => T;
 
-export interface RouteProvider<T> {
+export interface StoreProvider<T> {
   reducer: ReducerFunc<T, T>;
   initialState: T;
   children: ReactNode;
 }
 
-export interface Store<T> {
-  PageStoreContextProvider: FunctionComponent<RouteProvider<T>>;
+export interface Store<T = any> {
+  StoreContextProvider: FunctionComponent<StoreProvider<T>>;
   useCustomState: () => Reducer<T>;
   reducer: ReducerFunc<T, T>;
 }
@@ -31,22 +31,18 @@ export interface Store<T> {
  *
  */
 export function initStore<T>(): Store<T> {
-  const PageStoreContext = createContext<Partial<T | Reducer<T>>>({});
-  PageStoreContext.displayName = 'PageStoreContext';
+  const StoreContext = createContext<Partial<T | Reducer<T>>>({});
+  StoreContext.displayName = 'StoreContext';
 
   const store: Store<T> = {
-    PageStoreContextProvider: ({
-      reducer,
-      initialState,
-      children
-    }: RouteProvider<T>): JSX.Element => (
-      <PageStoreContext.Provider value={useReducer(reducer, initialState)}>
+    StoreContextProvider: ({ reducer, initialState, children }: StoreProvider<T>): JSX.Element => (
+      <StoreContext.Provider value={useReducer(reducer, initialState)}>
         {children}
-      </PageStoreContext.Provider>
+      </StoreContext.Provider>
     ),
-    useCustomState: (): Reducer<T> => useContext(PageStoreContext) as Reducer<T>,
+    useCustomState: (): Reducer<T> => useContext(StoreContext) as Reducer<T>,
     reducer: (prev: T, next: T) => Object.assign({}, prev, next)
   };
-  store.PageStoreContextProvider.displayName = 'PageStoreContext';
+  store.StoreContextProvider.displayName = 'StoreContextProvider';
   return store;
 }

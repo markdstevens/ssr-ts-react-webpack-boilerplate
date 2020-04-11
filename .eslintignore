@@ -6,3 +6,4 @@ cli
 jest.config.js
 jest.setup.js
 nodemon.json
+generate-init.js

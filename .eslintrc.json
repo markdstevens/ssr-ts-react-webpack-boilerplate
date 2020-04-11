@@ -18,7 +18,6 @@
     // react rules
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
-    "react/no-array-index-key": "error",
     "react/no-redundant-should-component-update": "error",
     "react/no-this-in-sfc": "error",
     "react/no-unused-prop-types": "error",
@@ -31,6 +30,7 @@
     "react/jsx-max-depth": ["error", { "max": 5 }],
     "react/jsx-no-useless-fragment": "error",
     "react/jsx-pascal-case": "error",
+    "react/prop-types": [2, { "ignore": ["children"] }],
 
     // typescript rules
     "@typescript-eslint/interface-name-prefix": "error",

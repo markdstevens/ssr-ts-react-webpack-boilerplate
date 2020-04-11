@@ -3,6 +3,7 @@ import { UrlPathParams } from 'utils/fetch-wrapper';
 import { LoadableComponent } from '@loadable/component';
 import { Request } from 'express';
 import { DataFetchingProps } from 'hooks/use-data-fetching';
+import { Store } from 'utils/store';
 
 export type PageProps<T, R = void> = RouteComponentProps<R> & DataFetchingProps<T>;
 export type StatefulPage<T, R = void> = LoadableComponent<PageProps<T, R>>;
@@ -21,5 +22,6 @@ export interface Controller<T = any, R = any> {
   exact: boolean;
   serverFetch?: ServerFetch<T>;
   clientFetch?: ClientFetch<T>;
+  store?: Store<T>;
   init: () => Controller<T, R>;
 }
