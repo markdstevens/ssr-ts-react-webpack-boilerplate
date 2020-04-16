@@ -1,13 +1,20 @@
 import React from 'react';
 import { hydrate } from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
-import { App } from 'components/App';
-
+import { loadableReady } from '@loadable/component';
+import { initViewControllers } from 'controllers';
+import { configureClientStores } from './configure-client-stores';
+import { App } from 'components/common/App';
 import 'styles/global.scss';
 
-hydrate(
-  <BrowserRouter>
-    <App data={window.__INITIAL_STATE__} />
-  </BrowserRouter>,
-  document.getElementById('app')
-);
+const stores = configureClientStores(window.__INITIAL_STATE__);
+const controllers = initViewControllers();
+
+loadableReady(() => {
+  hydrate(
+    <BrowserRouter>
+      <App stores={stores} controllers={controllers} />
+    </BrowserRouter>,
+    document.getElementById('app')
+  );
+});

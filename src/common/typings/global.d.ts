@@ -1,4 +1,4 @@
-import { GenericState } from 'utils/store';
+import { Stores, StoreMap } from 'stores/types';
 
 interface ServiceWorkerRoute {
   url: string;
@@ -10,6 +10,9 @@ declare global {
   const __BROWSER__: boolean;
   interface Window {
     __precacheManifest: ServiceWorkerRoute[];
-    __INITIAL_STATE__: GenericState;
+    __INITIAL_STATE__: {
+      stores: StoreMap;
+    };
+    applicationStores: Stores;
   }
 }

@@ -20,15 +20,14 @@
       "config": ["config/index.ts"],
       "components/*": ["common/components/*"],
       "hooks/*": ["common/hooks/*"],
-      "pages/*": ["common/pages/*"],
+      "views/*": ["common/views/*"],
       "stores/*": ["common/stores/*"],
       "controllers/*": ["common/controllers/*"],
       "controllers": ["common/controllers/index.ts"],
       "utils/*": ["common/utils/*"],
       "styles/*": ["common/styles/*"],
       "images/*": ["common/images/*"],
-      "hocs/*": ["common/hocs/*"],
-      "i18n": ["common/i18n/index.ts"]
+      "hocs/*": ["common/hocs/*"]
     },
     "typeRoots": ["./src/common/typings", "./node_modules/@types"],
     "types": ["jest"]

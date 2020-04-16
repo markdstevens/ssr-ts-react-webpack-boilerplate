@@ -12,11 +12,14 @@
     <%- htmlWebpackPlugin.options.styleTags %>
   </head>
   <body>
-    <div id="app"><% htmlWebpackPlugin.options.html %></div>
+    <div id="app"><%- htmlWebpackPlugin.options.html %></div>
     <noscript>Uh oh! Your browser does not support JavaScript!</noscript>
-    <script>window.__INITIAL_STATE__= <%- data %></script>
+    <% if (typeof stores === 'undefined') { %>
+      <% stores = null %>
+    <% } %>
+    <script>window.__INITIAL_STATE__= <%- stores %></script>
     <%- htmlWebpackPlugin.options.scriptTags %>
-    <% if (!isDev) { %>
+    <% if (typeof isDev !== 'undefined' && !isDev) { %>
       <script>
         if ('serviceWorker' in navigator) {
           window.addEventListener('load', () => {

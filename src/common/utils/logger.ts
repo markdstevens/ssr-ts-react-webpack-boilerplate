@@ -41,8 +41,8 @@ export const loggerUtils = {
  *   always be used instead of console.*
  */
 export const logger = {
-  info: (msg: string): void => {
-    console.info(msg);
+  info: (...messages: any[]): void => {
+    messages.forEach(msg => console.log(msg));
   },
 
   error: (err: string, e: Error): void => {

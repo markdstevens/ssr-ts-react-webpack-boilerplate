@@ -1,4 +1,3 @@
-import { GenericState } from 'utils/store';
 import { axiosWrapper } from 'utils/axiosWrapper';
 
 export interface UrlPathParams {
@@ -18,10 +17,7 @@ export interface UrlPathParams {
  *
  * @return {GenericState} A standardized response format
  */
-export async function fetchWrapper<T>(
-  url: string,
-  pathParams: UrlPathParams | undefined = {}
-): Promise<GenericState> {
+export async function fetchWrapper<T>(url: string, pathParams: UrlPathParams | undefined = {}): Promise<any> {
   try {
     Object.keys(pathParams).forEach(key => (url = url.replace(`:${key}`, pathParams[key])));
 
