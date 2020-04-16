@@ -5,7 +5,7 @@ type LocalizedStrings = { [key in LocKeys]: string };
 
 export interface LocalizationState {
   strings: LocalizedStrings;
-  getLoc: (locKey: LocKeys, locParams: LocParams) => string;
+  getLoc: (locKey: LocKeys, locParams?: LocParams) => string;
 }
 
 interface LocParams {
