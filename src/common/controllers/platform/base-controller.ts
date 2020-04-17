@@ -6,9 +6,9 @@ import { Stores } from 'stores/types';
 import { ControllerType } from './ControllerType';
 
 export abstract class BaseController implements Controller {
-  public abstract path: string;
-  public abstract exact: boolean;
-  public abstract type: ControllerType;
+  public abstract readonly path: string;
+  public abstract readonly exact: boolean;
+  public abstract readonly type: ControllerType;
 
   constructor() {
     this.clientFetch = this.clientFetch.bind(this);

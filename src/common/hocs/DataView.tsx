@@ -3,10 +3,12 @@ import { useDataFetching } from 'hooks/useDataFetching';
 import { BaseViewController } from 'controllers/platform/base-view-controller';
 import { DataViewHoc, StatefulView } from 'common/views/types';
 
-export const dataView: DataViewHoc = ({ view, clientFetch }: BaseViewController) => {
+type DataViewHocParams = Pick<BaseViewController, 'view' | 'clientFetch'>;
+
+export const dataView: DataViewHoc = ({ view, clientFetch }: DataViewHocParams) => {
   const View = view as StatefulView;
   const DataView = (): JSX.Element => {
-    const { loading = false, error = '' } = useDataFetching(clientFetch);
+    const { loading, error } = useDataFetching(clientFetch);
 
     return <View {...{ loading, error }} />;
   };

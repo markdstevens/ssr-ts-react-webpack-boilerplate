@@ -1,54 +1,24 @@
 import React, { FunctionComponent } from 'react';
-import { useTodoStore } from 'stores/todo-store';
-import { useLocalizationStore } from 'stores/platform/localization-store';
-import { useHistory, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { StatefulProps } from './types';
+import { useLocalizationStore } from 'stores/platform/localization-store';
+import { logger } from 'utils/logger';
 
-let index = 0;
+interface TodoParams {
+  id: string;
+}
 
 const Todo: FunctionComponent<StatefulProps> = ({ error, loading }: StatefulProps) => {
-  const [todoState, updateTodos] = useTodoStore();
-  const history = useHistory();
   const [{ getLoc }] = useLocalizationStore();
+  const params = useParams<TodoParams>();
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  logger.info(params);
 
-  if (!todoState.todos?.length && (error || loading)) {
+  if (error || loading) {
     return null;
   }
 
-  return (
-    <>
-      <Link to="/todo/hellos">{getLoc('navBarTitle')}</Link>
-      <ul>
-        {todoState.todos?.map((todo, index) => (
-          <li key={`${todo}-${index}`}>{todo}</li>
-        ))}
-      </ul>
-      <button
-        type="button"
-        onClick={() => {
-          const todos = Object.assign([], todoState.todos);
-          todos.push(`new todo ${index++}!`);
-          updateTodos({ todos });
-        }}
-      >
-        Add todo
-      </button>
-
-      <form
-        action="/todo/hello"
-        onSubmit={e => {
-          e.preventDefault();
-          history.push(`/todo/hello${index++}`);
-        }}
-      >
-        <input type="submit" value="Submit" />
-      </form>
-    </>
-  );
+  return <div>{getLoc('greeting', { name: 'world!' })}</div>;
 };
 
 export default Todo;

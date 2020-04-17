@@ -1,15 +1,14 @@
 import { BaseStore } from 'stores/base-store';
-import { LocKeys } from 'i18n/types';
-
-type LocalizedStrings = { [key in LocKeys]: string };
-
-export interface LocalizationState {
-  strings: LocalizedStrings;
-  getLoc: (locKey: LocKeys, locParams?: LocParams) => string;
-}
+import { LocKeyMap } from 'i18n/platform/types';
+import { LocKeys } from 'i18n/platform/loc-keys';
 
 interface LocParams {
   [key: string]: string;
+}
+
+export interface LocalizationState {
+  strings: LocKeyMap;
+  getLoc: (locKey: LocKeys, locParams?: LocParams) => string;
 }
 
 export class LocalizationStore extends BaseStore<LocalizationState> {
@@ -48,6 +47,7 @@ export class LocalizationStore extends BaseStore<LocalizationState> {
 
   public async fetch(language: string, region: string): Promise<void> {
     const module = await import(/* webpackChunkName: "[request]" */ `../../../../i18n/strings.${language}-${region}`);
+
     this.state.strings = module.strings;
   }
 }
