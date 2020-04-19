@@ -1,6 +1,7 @@
 import { BaseStore } from 'stores/base-store';
 import { LocKeyMap } from 'i18n/platform/types';
 import { LocKeys } from 'i18n/platform/loc-keys';
+import { logger } from 'utils/logger';
 
 interface LocParams {
   [key: string]: string;

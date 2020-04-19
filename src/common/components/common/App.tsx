@@ -13,23 +13,27 @@ interface AppProps {
 }
 
 export const App: FunctionComponent<AppProps> = ({ stores, controllers }: AppProps) => (
-  <StoreProviders stores={stores}>
+  <StoreProviders stores={stores} controllers={controllers}>
     <PageWrapper>
       <Switch>
-        {controllers.map(({ path, exact, component: View }) => (
-          <Route
-            key={path}
-            path={path}
-            exact={exact}
-            render={(): JSX.Element => (
-              <ErrorBoundary>
-                <Profiler id={path} onRender={logger.profile}>
-                  <View />
-                </Profiler>
-              </ErrorBoundary>
-            )}
-          />
-        ))}
+        {controllers
+          .map(controller => controller.actionDetails)
+          .map(controllerActionMetaDataList =>
+            controllerActionMetaDataList.map(({ action, controller, View }) => (
+              <Route
+                key={action}
+                path={action}
+                exact={true}
+                render={(): JSX.Element => (
+                  <ErrorBoundary>
+                    <Profiler id={action} onRender={logger.profile}>
+                      <View controller={controller} />
+                    </Profiler>
+                  </ErrorBoundary>
+                )}
+              />
+            ))
+          )}
       </Switch>
     </PageWrapper>
   </StoreProviders>

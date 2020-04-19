@@ -1,58 +1,52 @@
-import { Controller, FetchOptions, RouteProps } from './controller';
-import { pathToRegexp, Key } from 'path-to-regexp';
-import { Request } from 'express';
-import { UrlPathParams } from 'utils/fetch-wrapper';
-import { Stores } from 'stores/types';
+import { Controller } from './controller';
 import { ControllerType } from './ControllerType';
+import { ControllerActionMetaData, MatchingControllerMethodMetaData } from './controller-meta-data';
+import { matchPath } from 'react-router-dom';
+import { Stores } from 'stores/types';
+import autoBind from 'auto-bind';
 
 export abstract class BaseController implements Controller {
   public abstract readonly path: string;
   public abstract readonly exact: boolean;
   public abstract readonly type: ControllerType;
+  public abstract get actionDetails(): ControllerActionMetaData[];
 
   constructor() {
-    this.clientFetch = this.clientFetch.bind(this);
-    this.serverFetch = this.serverFetch.bind(this);
+    autoBind(this);
   }
 
-  /**
-   * This is a dummy method. Subclasses that wish to have fetch functionality
-   * can override this method
-   */
-  public async fetch(fetchOptions: FetchOptions): Promise<void> {
-    return Promise.resolve();
-  }
+  public getMatchingControllerMethodMetaData(
+    fullPathname: string,
+    stores: Stores
+  ): MatchingControllerMethodMetaData | undefined {
+    return Object.keys(this)
+      .filter(methodOrProperty =>
+        Object.getOwnPropertyDescriptor(this, methodOrProperty)?.value?.name?.includes('__API_METHOD__')
+      )
+      .map(controllerMethod => {
+        const controllerPath = this.path;
+        const actionPath = fullPathname.replace(this.path, '');
+        const fullPath = `${controllerPath}${actionPath}`;
 
-  public async clientFetch(routeProps: RouteProps, stores: Stores): Promise<void> {
-    await this.fetch({ ...routeProps, stores });
-  }
+        const [, , methodPaths] = Object.getOwnPropertyDescriptor(this, controllerMethod)?.value?.name?.split('|');
 
-  public async serverFetch(req: Request, stores: Stores): Promise<void> {
-    const result = req.params['0'].match(this.pathRegex);
-    const params: UrlPathParams = {};
+        const match = (methodPaths.split(',') as string[])
+          .map(methodPath =>
+            matchPath(actionPath, {
+              path: methodPath
+            })
+          )
+          .find(match => match?.isExact);
 
-    if (result?.groups) {
-      Object.keys(result?.groups).forEach(group => {
-        params[group] = (result.groups && result.groups[group]) ?? '';
-      });
-    }
+        const params = match?.params ?? {};
 
-    await this.fetch({ ...{ pathname: req.url, params }, stores });
-  }
-
-  protected get isStateful(): boolean {
-    return Object.getPrototypeOf(this).hasOwnProperty('fetch');
-  }
-
-  private get pathRegex(): RegExp {
-    const keys: Key[] = [];
-    pathToRegexp(this.path, keys);
-
-    let finalPath = this.path.replace(new RegExp('/', 'g'), '\\/');
-    keys.forEach(({ name }) => {
-      finalPath = finalPath.replace(`:${name}`, `(?<${name}>.*)`);
-    });
-
-    return new RegExp(finalPath);
+        return {
+          fetchOptions: { ...{ actionPath, controllerPath, fullPath, params }, stores },
+          controllerMethod,
+          methodPaths: methodPaths?.split(','),
+          isMatch: match?.isExact ?? false
+        };
+      })
+      .find(matchingControllerMethods => matchingControllerMethods.isMatch);
   }
 }

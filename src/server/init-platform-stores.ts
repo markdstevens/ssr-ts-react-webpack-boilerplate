@@ -16,7 +16,8 @@ export function initPlatformStores(request: Request): StoreMap {
     location: req.path,
     language: req.locale.language,
     region: req.locale.region,
-    locale: `${req.locale.language}-${req.locale.region}`
+    locale: `${req.locale.language}-${req.locale.region}`,
+    isServerLoad: true
   };
 
   return {

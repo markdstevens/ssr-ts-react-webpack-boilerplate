@@ -3,7 +3,7 @@ import path from 'path';
 import express from 'express';
 import { renderToString } from 'react-dom/server';
 import { App } from 'components/common/App';
-import { StaticRouter, matchPath } from 'react-router-dom';
+import { StaticRouter } from 'react-router-dom';
 import { ChunkExtractor } from '@loadable/server';
 import { logger } from 'utils/logger';
 import { config } from 'config/base';
@@ -13,6 +13,8 @@ import { Event } from 'utils/event';
 import { configureServerStores } from './configure-server-stores';
 import { ServerContextStore } from 'stores/platform/server-context-store';
 import { LocalizationStore } from 'stores/platform/localization-store';
+import { CallableController } from 'controllers/platform';
+import { fetchInitialRouteData } from './fetch-initial-route-data';
 
 const statsFile = path.resolve('dist/loadable-stats.json');
 
@@ -32,13 +34,9 @@ server.get('*', async (req, res) => {
   await localizationStore.fetch(state.language, state.region);
 
   const controllers = initViewControllers();
-  const activeController = controllers.find(controller => matchPath(req.url, controller));
+  const activeController = controllers.find(controller => req.path.startsWith(controller.path));
 
-  if (!activeController) {
-    logger.event(Event.NO_ROUTE_FOUND, `error='no route found that matches ${req.url}'`);
-  }
-
-  await activeController?.serverFetch?.(req, stores);
+  await fetchInitialRouteData(activeController, stores, req.path);
 
   const html = renderToString(
     extractor.collectChunks(

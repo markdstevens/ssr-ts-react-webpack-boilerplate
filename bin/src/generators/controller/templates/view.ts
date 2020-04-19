@@ -1,14 +1,35 @@
 import { Key } from 'path-to-regexp';
 
-const statelessView = (pascalViewName: string) => `import React, { FunctionComponent } from 'react';
+const dynamicStatelessView = (
+  pascalViewName: string,
+  params: Key[]
+) => `import React, { FunctionComponent } from 'react';
+import { useLocalizationStore } from 'stores/platform/localization-store';
+import { logger } from 'utils/logger';
+
+interface ${pascalViewName}Params {
+  ${getParams(params)}
+}
+
+const ${pascalViewName}: FunctionComponent = () => {
+  const [{ getLoc }] = useLocalizationStore();
+  const params = useParams<${pascalViewName}Params>();
+
+  logger.info(params);
+
+  return <div>{getLoc('greeting', { name: 'world!' })}</div>;
+};
+
+export default ${pascalViewName};
+`;
+
+const staticStatelessView = (pascalViewName: string) => `import React, { FunctionComponent } from 'react';
 import { useLocalizationStore } from 'stores/platform/localization-store';
 
 const ${pascalViewName}: FunctionComponent = () => {
   const [{ getLoc }] = useLocalizationStore();
 
-  return (
-    <div>{getLoc('helloWorld', { name: 'world!' })}</div>
-  );
+  return <div>{getLoc('greeting', { name: 'world!' })}</div>;
 };
 
 export default ${pascalViewName};
@@ -67,4 +88,4 @@ export const view = (isStateful: boolean, viewName: string, params: Key[] = []) 
     ? params.length
       ? dynamicStatefulView(viewName, params)
       : staticStatefulView(viewName)
-    : statelessView(viewName);
+    : staticStatelessView(viewName);

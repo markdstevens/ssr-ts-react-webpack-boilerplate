@@ -1,35 +1,40 @@
 import { useLocation, useParams } from 'react-router-dom';
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useContext, useMemo } from 'react';
 import { useServerContextStore } from 'stores/platform/server-context-store';
-import { ClientFetch, RouteProps } from 'controllers/platform/controller';
+import { FetchOptions } from 'controllers/platform/controller';
 import { AllStoreContext } from 'stores/all-store-context';
+import { logger } from 'utils/logger';
 
-interface UseDataResponse {
-  error: string;
-  loading: boolean;
+interface FetchMethod {
+  (fetchOptions: FetchOptions): Promise<void>;
 }
 
-export function useDataFetching<T>(clientFetch: ClientFetch): UseDataResponse {
+export function useDataFetching<T>(clientFetch: FetchMethod, controllerPath: string): void {
   const location = useLocation();
   const params = useParams();
   const stores = useContext(AllStoreContext);
-  const [serverLocation] = useServerContextStore();
+  const [serverContextState] = useServerContextStore();
 
-  const isSamePathAsInitialPageLoad = serverLocation.location === location.pathname;
-  const [dataResponseState, setDataResponseState] = useState<UseDataResponse>({
-    error: '',
-    loading: !isSamePathAsInitialPageLoad
-  });
+  const actionPath = location.pathname.replace(controllerPath, '');
+  const fullPath = `${controllerPath}${actionPath}`;
+
+  const clientFetchParams = useMemo(
+    () => ({
+      pathname: location.pathname,
+      params,
+      stores,
+      actionPath,
+      controllerPath,
+      fullPath
+    }),
+    [location]
+  );
 
   useEffect(() => {
-    async function fetch(routeProps: RouteProps): Promise<void> {
-      setDataResponseState({ error: '', loading: true });
-      await clientFetch(routeProps, stores);
-      setDataResponseState({ error: '', loading: false });
-    }
-
-    fetch({ pathname: location.pathname, params });
-  }, [location, params, clientFetch]);
-
-  return dataResponseState;
+    (async function fetch(): Promise<void> {
+      if (clientFetch && !serverContextState.isServerLoad) {
+        await clientFetch(clientFetchParams);
+      }
+    })();
+  }, [clientFetchParams]);
 }

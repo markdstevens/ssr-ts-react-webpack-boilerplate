@@ -1,15 +1,13 @@
 import { LoadableComponent } from '@loadable/component';
 import { BaseViewController } from 'controllers/platform/base-view-controller';
 
-export interface StatefulProps {
-  error: string;
-  loading: boolean;
+interface DataViewHocResponseProps {
+  controller: BaseViewController;
 }
-
-export type DataViewHocResponse = () => JSX.Element;
+export type DataViewHocResponse = (props: DataViewHocResponseProps) => JSX.Element;
 export type DataViewHoc = (baseViewController: BaseViewController) => DataViewHocResponse;
 
 export type StatelessView = LoadableComponent<{}>;
-export type StatefulView = LoadableComponent<StatefulProps>;
+export type StatefulView = LoadableComponent<{}>;
 
 export type ControllerView = StatelessView | StatefulView;

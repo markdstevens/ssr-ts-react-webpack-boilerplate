@@ -4,6 +4,7 @@ export interface Store<T = any> {
   fetch: (...args: any[]) => Promise<void>;
   state: T;
   updateState(prevState: T, nextState: T): T;
+  dispatch: Dispatch<T>;
 }
 
 export interface StoreMap<T = any> {
