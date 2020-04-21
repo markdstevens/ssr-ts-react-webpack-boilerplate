@@ -1,10 +1,9 @@
-import { Controller } from './platform/controller';
-import { ViewController } from './platform/view-controller';
-import { ControllerType } from './platform/ControllerType';
-import { TodoController } from './todo-controller';
+import { Controller } from 'platform/controllers/controller';
+import { ViewController } from 'platform/controllers/view-controller';
+import { ControllerType } from 'platform/controllers/ControllerType';
 import { NameController } from './name-controller';
 
-export const initControllers = (): Controller[] => [new TodoController(), new NameController()];
+export const initControllers = (): Controller[] => [new NameController()];
 
 export const initViewControllers = (): ViewController[] =>
   initControllers()

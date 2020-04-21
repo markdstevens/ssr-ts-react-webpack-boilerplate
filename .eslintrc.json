@@ -30,6 +30,7 @@
     // typescript rules
     "@typescript-eslint/interface-name-prefix": "error",
     "@typescript-eslint/ban-ts-ignore": "error",
+    "@typescript-eslint/no-explicit-any": "off",
 
     // custom rules
     "eol-last": "error",

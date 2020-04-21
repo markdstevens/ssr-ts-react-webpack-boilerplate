@@ -1,8 +1,8 @@
 import React from 'react';
-import { ErrorBoundary } from 'components/common/ErrorBoundary';
+import { ErrorBoundary } from 'platform/common/ErrorBoundary';
 import { mount } from 'enzyme';
-import { logger } from 'utils/logger';
-import { Event } from 'utils/event';
+import { logger } from 'platform/utils/logger';
+import { Event } from 'platform/utils/event';
 
 const GoodComponent = (): JSX.Element => <div>Success!</div>;
 const EvilComponent = (props: any): JSX.Element => <div>{props.waitForIt.kaboom}</div>;

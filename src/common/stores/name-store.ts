@@ -1,10 +1,10 @@
-export const store = (storeNamePascal: string) => `import { BaseStore } from 'platform/stores/base-store';
+import { BaseStore } from 'platform/stores/base-store';
 
-export interface ${storeNamePascal}State {
+export interface NameStoreState {
   items?: string[];
 }
 
-export class ${storeNamePascal} extends BaseStore<${storeNamePascal}State> {
+export class NameStore extends BaseStore<NameStoreState> {
   async fetch(): Promise<void> {
     this.state.items = [];
     this.state.items = await this.getItems();
@@ -15,4 +15,3 @@ export class ${storeNamePascal} extends BaseStore<${storeNamePascal}State> {
     return Promise.resolve(['item 1', 'item 2']);
   }
 }
-`;

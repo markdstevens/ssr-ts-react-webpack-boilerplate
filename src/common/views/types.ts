@@ -1,5 +1,5 @@
 import { LoadableComponent } from '@loadable/component';
-import { BaseViewController } from 'controllers/platform/base-view-controller';
+import { BaseViewController } from 'platform/controllers/base-view-controller';
 
 interface DataViewHocResponseProps {
   controller: BaseViewController;

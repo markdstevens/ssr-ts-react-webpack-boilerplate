@@ -2,9 +2,9 @@ import inquirer from 'inquirer';
 import { pascalCase } from 'pascal-case';
 import path from 'path';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
-import { store, index, context, reducer, useStore } from './templates';
+import { store } from './templates';
 
-const getStorePath = (storeName: string) => path.join(__dirname, `../../../../src/common/stores/${storeName}`);
+const getStorePath = (storeName: string) => path.join(__dirname, `../../../../src/common/stores/${storeName}.ts`);
 
 export const storeGenerator = async () => {
   const answers = await inquirer.prompt([
@@ -21,8 +21,8 @@ export const storeGenerator = async () => {
           return 'store name must end with "-store"';
         }
 
-        const storeDir = getStorePath(input);
-        if (existsSync(storeDir)) {
+        const storeFile = getStorePath(input);
+        if (existsSync(storeFile)) {
           return 'store already exists';
         }
 
@@ -33,12 +33,7 @@ export const storeGenerator = async () => {
 
   const { storeName } = answers;
   const pascalStoreName = pascalCase(storeName);
-  const storeDir = getStorePath(storeName);
+  const storeFile = getStorePath(storeName);
 
-  mkdirSync(storeDir);
-  writeFileSync(`${storeDir}/store.ts`, store(pascalStoreName));
-  writeFileSync(`${storeDir}/context.ts`, context(pascalStoreName));
-  writeFileSync(`${storeDir}/reducer.ts`, reducer(pascalStoreName));
-  writeFileSync(`${storeDir}/use${pascalStoreName}.ts`, useStore(pascalStoreName));
-  writeFileSync(`${storeDir}/index.ts`, index(pascalStoreName));
+  writeFileSync(`${storeFile}`, store(pascalStoreName));
 };

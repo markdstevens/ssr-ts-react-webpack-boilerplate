@@ -8,6 +8,7 @@ import { storeGenerator } from './generators/store';
 import { localizationGenerator } from './generators/localization';
 import inquirer from 'inquirer';
 import { controllerGenerator } from './generators/controller';
+import npm from 'npm';
 
 clear();
 console.log(chalk.green(figlet.textSync('generator', { horizontalLayout: 'full' })));
@@ -61,7 +62,8 @@ async function run() {
     if (shouldContinueAnswer.shouldContinue) {
       clear();
     } else {
-      process.exit(0);
+      (npm as any).load(() => (npm as any).run('codegen'));
+      break;
     }
   }
 }
