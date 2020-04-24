@@ -3,7 +3,7 @@ export const statelessController = (
   path: string,
   viewName: string
 ) => `import loadable from '@loadable/component';
-import { BaseViewController } from 'controllers/platform/base-view-controller';
+import { BaseViewController } from 'platform/controllers/base-view-controller';
 
 export class ${pascalCaseControllerName} extends BaseViewController {
   public readonly path = '${path}';
@@ -41,7 +41,12 @@ export class ${pascalCaseControllerName} extends BaseViewController {
 }
 `;
 
-export const controller = (isStateful: boolean, pascalCaseControllerName: string, path: string, viewName: string) =>
+export const controller = (
+  isStateful: boolean,
+  pascalCaseControllerName: string,
+  path: string,
+  viewName: string
+) =>
   isStateful
     ? statefulController(pascalCaseControllerName, path, viewName)
     : statelessController(pascalCaseControllerName, path, viewName);

@@ -1,8 +1,8 @@
 import { readdirSync, writeFileSync, unlinkSync, existsSync, mkdirSync } from 'fs';
-import path from 'path';
 import { pascalCase } from 'pascal-case';
 import { camelCase } from 'camel-case';
 import rimraf from 'rimraf';
+import path from 'path';
 
 const applicationStores = readdirSync(path.join(__dirname, '../../common/stores'));
 const storesMetaData = applicationStores
@@ -54,7 +54,10 @@ export const StoreProviders: FunctionComponent<StoresProps> = ({ children, store
     storesMetaData.length
       ? `useEffect(() => {
     ${storesMetaData
-      .map(({ camelStoreName, storeReducer }) => `${camelStoreName}.dispatch = debounce(${storeReducer}[1], 10);`)
+      .map(
+        ({ camelStoreName, storeReducer }) =>
+          `${camelStoreName}.dispatch = debounce(${storeReducer}[1], 10);`
+      )
       .join('\n    ')}
   });`
       : ''
@@ -69,7 +72,7 @@ export const StoreProviders: FunctionComponent<StoresProps> = ({ children, store
           {children}
           ${storesMetaData
             .reverse()
-            .map(({ storeProvider, storeReducer }) => `</${storeProvider}>`)
+            .map(({ storeProvider }) => `</${storeProvider}>`)
             .join('\n')}
         </LocalizationStoreProvider>
       </ServerContextStoreProvider>
@@ -80,7 +83,10 @@ export const StoreProviders: FunctionComponent<StoresProps> = ({ children, store
 
 const initClientStores = `import { StoreMap } from 'platform/stores/types';
 ${storesMetaData
-  .map(({ pascalStoreName, originalName }) => `import { ${pascalStoreName} } from 'stores/${originalName}';`)
+  .map(
+    ({ pascalStoreName, originalName }) =>
+      `import { ${pascalStoreName} } from 'stores/${originalName}';`
+  )
   .join('\n')}
 
 export function initCustomClientStores(serializedStores: StoreMap): StoreMap {
@@ -97,13 +103,19 @@ export function initCustomClientStores(serializedStores: StoreMap): StoreMap {
 
 const initServerStores = `import { StoreMap } from 'platform/stores/types';
 ${storesMetaData
-  .map(({ pascalStoreName, originalName }) => `import { ${pascalStoreName} } from 'stores/${originalName}';`)
+  .map(
+    ({ pascalStoreName, originalName }) =>
+      `import { ${pascalStoreName} } from 'stores/${originalName}';`
+  )
   .join('\n')}
 
 export function initCustomServerStores(): StoreMap {
   return {
     ${storesMetaData
-      .map(({ pascalStoreName, camelStoreName }) => `${camelStoreName}: new ${pascalStoreName}({} as any)`)
+      .map(
+        ({ pascalStoreName, camelStoreName }) =>
+          `${camelStoreName}: new ${pascalStoreName}({} as any)`
+      )
       .join(',\n')}
   };
 }
@@ -135,36 +147,38 @@ readdirSync(path.join(__dirname, '../stores'))
     rimraf.sync(path.join(__dirname, `../stores/${store}`));
   });
 
-storesMetaData.forEach(({ originalName, storeContext, storeProvider, storeState, storeHook, storeReducerType }) => {
-  const storeDir = path.join(__dirname, `../stores/${originalName}`);
+storesMetaData.forEach(
+  ({ originalName, storeContext, storeProvider, storeState, storeHook, storeReducerType }) => {
+    const storeDir = path.join(__dirname, `../stores/${originalName}`);
 
-  mkdirSync(storeDir);
-  writeFileSync(
-    `${storeDir}/context.ts`,
-    `import { createContext } from 'react';
+    mkdirSync(storeDir);
+    writeFileSync(
+      `${storeDir}/context.ts`,
+      `import { createContext } from 'react';
 import { ${storeReducerType} } from './reducer';
   
 export const ${storeContext} = createContext<${storeReducerType}>({} as ${storeReducerType});
 export const ${storeProvider} = ${storeContext}.Provider;
 `
-  );
+    );
 
-  writeFileSync(
-    `${storeDir}/reducer.ts`,
-    `import { ${storeState} } from 'stores/${originalName}';
+    writeFileSync(
+      `${storeDir}/reducer.ts`,
+      `import { ${storeState} } from 'stores/${originalName}';
 import { Reducer } from 'platform/stores/types';
 
 export type ${storeReducerType} = Reducer<${storeState}>;
 `
-  );
+    );
 
-  writeFileSync(
-    `${storeDir}/${storeHook}.ts`,
-    `import { ${storeReducerType} } from './reducer';
+    writeFileSync(
+      `${storeDir}/${storeHook}.ts`,
+      `import { ${storeReducerType} } from './reducer';
 import { useContext } from 'react';
 import { ${storeContext} } from './context';
     
 export const ${storeHook} = (): ${storeReducerType} => useContext<${storeReducerType}>(${storeContext});
 `
-  );
-});
+    );
+  }
+);

@@ -8,7 +8,8 @@ import { pathToRegexp, Key } from 'path-to-regexp';
 const getNewControllerPath = (controllerName: string) =>
   path.join(__dirname, `../../../../src/common/controllers/${controllerName}.ts`);
 
-const getNewViewPath = (viewName: string) => path.join(__dirname, `../../../../src/common/views/${viewName}.tsx`);
+const getNewViewPath = (viewName: string) =>
+  path.join(__dirname, `../../../../src/common/views/${viewName}.tsx`);
 
 export const controllerGenerator = async () => {
   const answers = await inquirer.prompt([
@@ -56,7 +57,6 @@ export const controllerGenerator = async () => {
   ]);
 
   const { controllerName, controllerRoute, isStateful } = answers;
-  const hasDynamicParams = controllerRoute.includes('/:');
 
   const params: Key[] = [];
   pathToRegexp(controllerRoute, params);
@@ -66,6 +66,9 @@ export const controllerGenerator = async () => {
   const controllerPath = getNewControllerPath(controllerName);
   const viewPath = getNewViewPath(viewName);
 
-  writeFileSync(controllerPath, controller(isStateful, pascalCase(controllerName), controllerRoute, viewName));
+  writeFileSync(
+    controllerPath,
+    controller(isStateful, pascalCase(controllerName), controllerRoute, viewName)
+  );
   writeFileSync(viewPath, view(isStateful, pascalCase(viewName), params));
 };

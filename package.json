@@ -16,7 +16,9 @@
     "start": "rimraf dist && yarn tsm && yarn codegen && yarn build && node dist/server.js",
     "start:dev": "rimraf dist && cat banner.txt && yarn tsm && yarn codegen && yarn build:dev",
     "generate": "ts-node --project bin/tsconfig.json bin/src/generator.ts",
-    "codegen": "ts-node --project src/platform/codegen/tsconfig.json src/platform/codegen/store-boilerplate.ts"
+    "codegen": "yarn codegen:stores && yarn codegen:controllers",
+    "codegen:stores": "ts-node --project src/platform/codegen/tsconfig.json src/platform/codegen/store-boilerplate.ts",
+    "codegen:controllers": "ts-node --project src/platform/codegen/tsconfig.json src/platform/codegen/controller-boilerplate.ts"
   },
   "husky": {
     "hooks": {

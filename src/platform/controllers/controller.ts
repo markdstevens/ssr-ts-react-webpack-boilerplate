@@ -1,30 +1,19 @@
-import { Stores } from 'platform/stores/types';
-import { ControllerType } from './ControllerType';
-import { ControllerActionMetaData, MatchingControllerMethodMetaData } from './controller-meta-data';
+import autoBind from 'auto-bind';
+import { controllerRegistry } from './controller-registry';
 
-export interface FetchOptions {
-  params: Params;
-  actionPath: string;
-  controllerPath: string;
-  fullPath: string;
-  stores: Stores;
-}
+export abstract class Controller {
+  [key: string]: any;
+  public path = '';
 
-interface Params {
-  [key: string]: string | number | boolean;
-}
+  constructor(name: string) {
+    autoBind(this);
 
-export interface Controller {
-  path: string;
-  exact: boolean;
-  type: ControllerType;
-  actionDetails: ControllerActionMetaData[];
-  getMatchingControllerMethodMetaData: (
-    pathname: string,
-    stores: Stores
-  ) => MatchingControllerMethodMetaData | undefined;
-}
-
-export interface CallableController {
-  [key: string]: (fetchOptions: FetchOptions) => Promise<void>;
+    const controller = controllerRegistry.findControllerByControllerName(name);
+    if (controller) {
+      controller.instance = this;
+      controller?.actions.forEach(action => {
+        action.method = controller.instance?.[action.name];
+      });
+    }
+  }
 }

@@ -196,7 +196,10 @@ export default (env: WebpackEnvironment = {}): webpack.Configuration[] => {
     },
     plugins: [
       new webpack.DefinePlugin({ __BROWSER__: false }),
-      new CopyWebpackPlugin([{ from: 'src/public/manifest.json' }, { from: 'src/public/penguin.png' }])
+      new CopyWebpackPlugin([
+        { from: 'src/public/manifest.json' },
+        { from: 'src/public/penguin.png' }
+      ])
     ]
   });
 
@@ -210,7 +213,12 @@ export default (env: WebpackEnvironment = {}): webpack.Configuration[] => {
 
   if (isDev) {
     if (!env.nostart && !isProfiling) {
-      serverConfig.plugins.push(new NodemonPlugin());
+      serverConfig.plugins.push(
+        new NodemonPlugin({
+          script: './dist/server.js',
+          watch: path.resolve('./dist')
+        })
+      );
     }
     serverConfig.plugins.push(
       new CleanWebpackPlugin({

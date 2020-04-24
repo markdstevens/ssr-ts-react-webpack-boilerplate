@@ -1,33 +1,18 @@
+import { baseRoute, route, view, Controller, FetchOptions } from 'platform/controllers';
 import loadable from '@loadable/component';
-import { baseRoute, route, BaseViewController, FetchOptions } from 'platform/controllers';
-import { NameStore } from 'stores/name-store';
+import { logger } from 'platform/utils/logger';
 
 @baseRoute('/name')
-export class NameController extends BaseViewController {
-  public readonly view = loadable(() => import('../views/name'));
-
+export class NameController extends Controller {
   @route('/')
-  public names(): Promise<void> {
-    return Promise.resolve();
+  @view(loadable(() => import('../views/name')))
+  public async names(fetchOptions: FetchOptions): Promise<void> {
+    logger.info(fetchOptions);
   }
 
-  public async stall(stallTime = 3000): Promise<void> {
-    await new Promise(resolve => setTimeout(resolve, stallTime));
-  }
-
-  @route('/search/:name')
-  public async findName({ stores }: FetchOptions): Promise<void> {
-    const name = stores.get<NameStore>('nameStore');
-
-    name.state.items = [];
-    name.state.items.push('let');
-
-    await this.stall();
-
-    name.state.items.push('us');
-
-    await this.stall();
-
-    name.state.items.push('go!');
+  @route('/search/:name', '/blah')
+  @view(loadable(() => import('../views/findName')))
+  public async findName(fetchOptions: FetchOptions): Promise<void> {
+    logger.info(fetchOptions);
   }
 }

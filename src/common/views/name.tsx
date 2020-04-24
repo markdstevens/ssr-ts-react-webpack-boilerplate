@@ -7,7 +7,7 @@ const Name: FC = () => {
 
   return (
     <>
-      <Link to="name/search/mark">Mark</Link>
+      <Link to="/name/search/mark">Mark</Link>
       <ul>
         {nameStoreState.items?.map((item, index) => (
           <li key={`item-${index}`}>{item}</li>

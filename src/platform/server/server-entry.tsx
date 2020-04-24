@@ -8,11 +8,12 @@ import { ChunkExtractor } from '@loadable/server';
 import { logger } from 'platform/utils/logger';
 import { config } from 'config/base';
 import createLocaleMiddleware from 'express-locale';
-import { initViewControllers } from 'controllers';
+import { initControllers } from 'platform/controllers/init-controllers';
 import { configureServerStores } from 'platform/server/configure-server-stores';
 import { ServerContextStore } from 'platform/stores/server-context-store';
 import { LocalizationStore } from 'platform/stores/localization-store';
 import { fetchInitialRouteData } from 'platform/server/fetch-initial-route-data';
+import { controllerRegistry } from 'platform/controllers';
 
 const statsFile = path.resolve('dist/loadable-stats.json');
 
@@ -27,19 +28,21 @@ server.get('*', async (req, res) => {
 
   const stores = configureServerStores(req);
   const { state } = stores.get<ServerContextStore>('serverContextStore');
-  const localizationStore = stores.get<LocalizationStore>('localizationStore');
 
-  await localizationStore.fetch(state.language, state.region);
+  await stores.get<LocalizationStore>('localizationStore').fetch(state.language, state.region);
 
-  const controllers = initViewControllers();
-  const activeController = controllers.find(controller => req.path.startsWith(controller.path));
+  initControllers();
 
-  await fetchInitialRouteData(activeController, stores, req.path);
+  await fetchInitialRouteData(
+    controllerRegistry.findControllerByPath(req.path)?.instance,
+    stores,
+    req.path
+  );
 
   const html = renderToString(
     extractor.collectChunks(
       <StaticRouter location={req.url}>
-        <App stores={stores} controllers={controllers} />
+        <App stores={stores} />
       </StaticRouter>
     )
   );

@@ -1,11 +1,13 @@
 import { Dispatch } from 'react';
-import { logger } from './logger';
 
 type StringIndexable = {
   [key: string]: any;
 };
 
-const getProxyHandler = <T extends StringIndexable>(state: T, dispatch: Dispatch<T>): ProxyHandler<T> => {
+const getProxyHandler = <T extends StringIndexable>(
+  state: T,
+  dispatch: Dispatch<T>
+): ProxyHandler<T> => {
   const handler = {
     get(target: T, key: string | number): any {
       if (key === '__IS_PROXY__') {
@@ -34,6 +36,6 @@ const getProxyHandler = <T extends StringIndexable>(state: T, dispatch: Dispatch
   return handler;
 };
 
-export const bindProxyHandler = <T extends StringIndexable>(dispatch: Dispatch<T>): ((state: T) => T) => (
-  state: T
-): T => new Proxy(state, getProxyHandler(state, dispatch));
+export const bindProxyHandler = <T extends StringIndexable>(
+  dispatch: Dispatch<T>
+): ((state: T) => T) => (state: T): T => new Proxy(state, getProxyHandler(state, dispatch));
