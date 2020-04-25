@@ -2,7 +2,7 @@ module.exports = {
   client: [
     {
       name: 'client.js',
-      maxSize: '50K'
+      maxSize: '85 Kb'
     },
     {
       name: 'vendors.client*',
@@ -10,7 +10,7 @@ module.exports = {
     },
     {
       name: 'main.*.css',
-      maxSize: '1K'
+      maxSize: '140 Kb'
     },
     {
       name: 'manifest.json',
@@ -27,12 +27,20 @@ module.exports = {
     {
       name: 'service-worker.js',
       maxSize: '559 b'
+    },
+    {
+      name: 'views-name.client.bundle.*.js',
+      maxSize: '85 Kb'
+    },
+    {
+      name: 'strings-en-US.client.bundle.*.js',
+      maxSize: '1 Kb'
     }
   ],
   server: [
     {
       name: 'server.js',
-      maxSize: '11.6Kb'
+      maxSize: '88 Kb'
     },
     {
       name: 'loadable-stats.json',
@@ -43,8 +51,12 @@ module.exports = {
       maxSize: '5K'
     },
     {
-      name: 'pages-home.server.bundle.*.js',
-      maxSize: '5K'
+      name: 'views-name.server.bundle.*.js',
+      maxSize: '5 kb'
+    },
+    {
+      name: 'strings-en-US.server.bundle.*.js',
+      maxSize: '1 Kb'
     }
   ]
 };

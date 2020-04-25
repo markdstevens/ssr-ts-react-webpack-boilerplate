@@ -1,4 +1,5 @@
-export const strings = {
-  navBarTitle: 'μαρὰν ἀθά',
-  chiRho: 'Chi rho'
+import { LocKeyMap } from './platform';
+
+export const strings: LocKeyMap = {
+  greeting: 'Hello, {name}!'
 };

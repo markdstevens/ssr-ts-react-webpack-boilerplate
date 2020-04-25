@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "lib": ["es2015", "es2016", "es2017", "dom"],
+    "lib": ["es2015", "es2016", "es2017", "es2019.array", "dom"],
     "outDir": "./dist/",
     "sourceMap": true,
     "module": "esnext",
@@ -12,7 +12,6 @@
     "baseUrl": "./src",
     "experimentalDecorators": true,
     "resolveJsonModule": true,
-    "noImplicitAny": true,
     "strict": true,
     "isolatedModules": true,
     "skipLibCheck": true,
@@ -20,7 +19,7 @@
       "config": ["config/index.ts"],
       "components/*": ["common/components/*"],
       "hooks/*": ["common/hooks/*"],
-      "pages/*": ["common/pages/*"],
+      "views/*": ["common/views/*"],
       "stores/*": ["common/stores/*"],
       "controllers/*": ["common/controllers/*"],
       "controllers": ["common/controllers/index.ts"],
@@ -28,7 +27,7 @@
       "styles/*": ["common/styles/*"],
       "images/*": ["common/images/*"],
       "hocs/*": ["common/hocs/*"],
-      "i18n": ["common/i18n/index.ts"]
+      "platform/*": ["platform/*"]
     },
     "typeRoots": ["./src/common/typings", "./node_modules/@types"],
     "types": ["jest"]

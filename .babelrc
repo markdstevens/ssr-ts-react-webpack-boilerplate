@@ -8,16 +8,13 @@
  * https://loadable-components.com/docs/babel-plugin/
  */
 {
-  "presets": [
-    ["@babel/preset-react"],
-    ["@babel/env", { "modules": false }],
-    ["@babel/preset-typescript"]
-  ],
+  "presets": [["@babel/preset-react"], ["@babel/env", { "modules": false }], ["@babel/preset-typescript"]],
   "plugins": [
     "@loadable/babel-plugin",
     "@babel/plugin-transform-runtime",
     "@babel/plugin-proposal-optional-chaining",
-    "@babel/plugin-proposal-class-properties"
+    ["@babel/plugin-proposal-decorators", { "legacy": true }],
+    ["@babel/plugin-proposal-class-properties", { "loose": true }]
   ],
   "env": {
     "test": {

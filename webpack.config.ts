@@ -138,7 +138,7 @@ export default (env: WebpackEnvironment = {}): webpack.Configuration[] => {
   }
 
   const clientConfig = merge.smart(baseConfig, {
-    entry: path.join(__dirname, './src/client/client-entry.tsx'),
+    entry: path.join(__dirname, './src/platform/client/client-entry.tsx'),
     target: 'web',
     output: {
       filename: 'client.js',
@@ -187,7 +187,7 @@ export default (env: WebpackEnvironment = {}): webpack.Configuration[] => {
   }
 
   const serverConfig = merge.smart(baseConfig, {
-    entry: './src/server/server-entry.tsx',
+    entry: './src/platform/server/server-entry.tsx',
     target: 'node',
     externals: [nodeExternals()],
     output: {
@@ -213,7 +213,12 @@ export default (env: WebpackEnvironment = {}): webpack.Configuration[] => {
 
   if (isDev) {
     if (!env.nostart && !isProfiling) {
-      serverConfig.plugins.push(new NodemonPlugin());
+      serverConfig.plugins.push(
+        new NodemonPlugin({
+          script: './dist/server.js',
+          watch: path.resolve('./dist')
+        })
+      );
     }
     serverConfig.plugins.push(
       new CleanWebpackPlugin({
