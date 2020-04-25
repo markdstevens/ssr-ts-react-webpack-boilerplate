@@ -15,20 +15,22 @@ export const App: FunctionComponent<AppProps> = ({ stores }: AppProps) => (
   <StoreProviders stores={stores}>
     <PageWrapper>
       <Switch>
-        {controllerRegistry.getActionMetaDataForReactRouter().map(({ path, View, fetch }) => (
-          <Route
-            key={path}
-            path={path}
-            exact={true}
-            render={(): JSX.Element => (
-              <ErrorBoundary>
-                <Profiler id={path} onRender={logger.profile}>
-                  {View ? <View fetch={fetch} /> : null}
-                </Profiler>
-              </ErrorBoundary>
-            )}
-          />
-        ))}
+        {controllerRegistry
+          .getActionMetaDataForReactRouter()
+          .map(({ path, View, fetch, isStatic }) => (
+            <Route
+              key={path}
+              path={path}
+              exact={true}
+              render={(): JSX.Element => (
+                <ErrorBoundary>
+                  <Profiler id={path} onRender={logger.profile}>
+                    {View ? isStatic ? <View /> : <View fetch={fetch} /> : null}
+                  </Profiler>
+                </ErrorBoundary>
+              )}
+            />
+          ))}
       </Switch>
     </PageWrapper>
   </StoreProviders>

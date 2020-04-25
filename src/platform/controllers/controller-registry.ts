@@ -1,5 +1,4 @@
 import { LoadableComponent } from '@loadable/component';
-import { matchPath } from 'react-router-dom';
 import {
   ControllerRegistry,
   RegisteredController,
@@ -7,8 +6,11 @@ import {
   ReactRouterAction
 } from 'platform/controllers/types';
 import { dataView } from 'platform/hocs/DataView';
+import { getMatchFromAction } from 'platform/utils/get-match-from-action';
 
 const registeredControllers: RegisteredController[] = [];
+
+const escapeMultipleSlashesInPath = (path: string): string => path.replace(/\/\//g, '/');
 
 export const controllerRegistry: ControllerRegistry = {
   initializeOrGetController: (controllerName: string): RegisteredController =>
@@ -28,10 +30,21 @@ export const controllerRegistry: ControllerRegistry = {
       registeredControllers.push(controller);
     }
 
-    controller.basePath = basePath;
+    let normalizedBasePath = basePath;
+    if (!normalizedBasePath.startsWith('/')) {
+      normalizedBasePath = '/' + normalizedBasePath;
+    }
+    if (!normalizedBasePath.endsWith('/')) {
+      normalizedBasePath = normalizedBasePath + '/';
+    }
+
+    controller.basePath = normalizedBasePath;
     controller.actions?.forEach(action => {
-      action.fullPaths = action.paths.map(actionPath => basePath + actionPath);
+      action.fullPaths = action.paths.map(actionPath =>
+        escapeMultipleSlashesInPath(basePath + actionPath)
+      );
     });
+
     return controller;
   },
 
@@ -48,6 +61,7 @@ export const controllerRegistry: ControllerRegistry = {
         name: actionName,
         paths: actionPaths,
         fullPaths: [],
+        controller,
         view: undefined,
         method: undefined
       };
@@ -88,12 +102,7 @@ export const controllerRegistry: ControllerRegistry = {
   findActionByFullPath: (fullPath: string): RegisteredControllerAction | undefined => {
     for (const registeredController of registeredControllers) {
       const matchingAction = registeredController.actions.find(action =>
-        action.fullPaths.find(path =>
-          matchPath(fullPath, {
-            path,
-            exact: true
-          })
-        )
+        getMatchFromAction(action, fullPath)
       );
 
       if (matchingAction) {
@@ -103,7 +112,7 @@ export const controllerRegistry: ControllerRegistry = {
     return undefined;
   },
 
-  findControllerForAction: (
+  findControllerByAction: (
     actionToFind: RegisteredControllerAction | null | undefined
   ): RegisteredController | undefined =>
     actionToFind
@@ -135,8 +144,9 @@ export const controllerRegistry: ControllerRegistry = {
         action.paths.forEach(actionPath =>
           actions.push({
             basePath: registeredController.basePath,
-            path: registeredController.basePath + actionPath,
-            View: action.view ? dataView(action.view) : undefined,
+            path: escapeMultipleSlashesInPath(registeredController.basePath + actionPath),
+            View: action.view ? (action.method ? dataView(action.view) : action.view) : undefined,
+            isStatic: !action.method,
             fetch: action.method
           })
         )
@@ -144,11 +154,5 @@ export const controllerRegistry: ControllerRegistry = {
     );
 
     return actions;
-  },
-
-  findControllerByPath(fullPath: string): RegisteredController | undefined {
-    return registeredControllers.find(registeredController =>
-      fullPath.startsWith(registeredController.basePath)
-    );
   }
 };

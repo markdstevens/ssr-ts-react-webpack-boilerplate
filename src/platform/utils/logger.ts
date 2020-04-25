@@ -7,11 +7,12 @@ interface SchedulerInteraction {
   timestamp: number;
 }
 
-/**
- * @description A utility wrapper for functions related to logging.
- */
+type EventParams = {
+  [key: string]: any;
+};
+
 export const loggerUtils = {
-  convertToLogString: (obj: Record<string, any>): string => {
+  convertToLogString: (obj: EventParams = {}): string => {
     const getVal = (val: any): string | null => {
       if (val == null) return null;
       if (typeof val === 'string' || typeof val === 'number') {
@@ -27,7 +28,7 @@ export const loggerUtils = {
 
     return Object.keys(obj)
       .reduce((currentStr, nextKey) => {
-        currentStr += `${nextKey}='${getVal(obj[nextKey])}' `;
+        currentStr += `${nextKey}="${getVal(obj[nextKey])}" `;
         return currentStr;
       }, '')
       .trim();
@@ -49,8 +50,10 @@ export const logger = {
     console.error(`${err} error=${e}`);
   },
 
-  event: (event: Event, str: string): void => {
-    console.log(`event=${Event[event]} ${str}`);
+  event: (event: Event, msg: string, params: EventParams = {}): void => {
+    console.log(
+      `event="${Event[event]}" message="${msg}" ${loggerUtils.convertToLogString(params)}`.trim()
+    );
   },
 
   /**

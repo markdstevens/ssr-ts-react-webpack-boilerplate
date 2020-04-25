@@ -1,38 +1,30 @@
-import { Controller, controllerRegistry } from 'platform/controllers';
+import { RegisteredControllerAction } from 'platform/controllers';
 import { logger } from 'platform/utils/logger';
 import { Event } from 'platform/utils/event';
 import { Stores } from 'platform/stores/types';
-import { matchPath } from 'react-router-dom';
+import { getMatchFromAction } from 'platform/utils/get-match-from-action';
 
 export async function fetchInitialRouteData(
-  controller: Controller | null | undefined,
+  controllerAction: RegisteredControllerAction | undefined,
   stores: Stores,
   pathname: string
 ): Promise<void> {
-  if (!controller) {
-    logger.event(Event.NO_ROUTE_FOUND, `no controller found for ${pathname}`);
+  if (controllerAction) {
+    await controllerAction.method?.({
+      params: getMatchFromAction(controllerAction, pathname)?.params ?? {},
+      stores,
+      controllerPath: controllerAction.controller.basePath,
+      actionPaths: controllerAction.paths,
+      fullPaths: controllerAction.fullPaths,
+      isServer: true
+    });
   } else {
-    const action = controllerRegistry.findActionByFullPath(pathname);
-
-    if (action) {
-      const match = action.fullPaths
-        .map(path =>
-          matchPath(pathname, {
-            path,
-            exact: true
-          })
-        )
-        .find(match => match?.isExact);
-
-      await action.method?.({
-        params: match?.params ?? {},
-        stores,
-        controllerPath: controller.path,
-        actionPaths: action.paths,
-        fullPaths: action.fullPaths
-      });
-    } else {
-      logger.event(Event.NO_ROUTE_FOUND, `no controller action found for ${pathname}`);
-    }
+    logger.event(
+      Event.NO_CONTROLLER_ACTION_FOUND,
+      `no controller mapping exists found for ${pathname}`,
+      {
+        path: pathname
+      }
+    );
   }
 }

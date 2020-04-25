@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { Stores } from 'platform/stores/types';
 import { Controller } from './controller';
 import { LoadableComponent } from '@loadable/component';
-import { DataViewHocProps } from 'platform/hocs/DataView';
+import { ViewProps } from 'platform/hocs/DataView';
 
 export interface FetchOptions {
   params: Params;
@@ -10,6 +10,7 @@ export interface FetchOptions {
   actionPaths: string[];
   fullPaths: string[];
   controllerPath: string;
+  isServer: boolean;
 }
 
 interface Params {
@@ -22,6 +23,7 @@ export interface RegisteredControllerAction {
   fullPaths: string[];
   view: LoadableComponent<{}> | undefined;
   method: ((fetchOptions: FetchOptions) => Promise<void>) | undefined;
+  controller: RegisteredController;
 }
 
 export interface RegisteredController {
@@ -34,13 +36,13 @@ export interface RegisteredController {
 export interface ReactRouterAction {
   basePath: string;
   path: string;
-  View: FC<DataViewHocProps> | undefined;
+  View: FC<ViewProps> | LoadableComponent<{}> | undefined;
   fetch: undefined | ((fetchOptions: FetchOptions) => Promise<void>);
+  isStatic: boolean;
 }
 
 export interface ControllerRegistry {
   findControllerByControllerName: (controllerName: string) => RegisteredController | undefined;
-  findControllerByPath: (fullPath: string) => RegisteredController | undefined;
   findActionByControllerAndActionName: (
     controllerName: string,
     actionName: string
@@ -50,7 +52,7 @@ export interface ControllerRegistry {
     controllerName: string,
     actionName: string
   ) => LoadableComponent<{}> | undefined;
-  findControllerForAction: (
+  findControllerByAction: (
     action: RegisteredControllerAction | undefined
   ) => RegisteredController | undefined;
 

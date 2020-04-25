@@ -1,6 +1,9 @@
 import { BaseStore } from 'platform/stores/base-store';
 import { LocKeyMap } from 'i18n/platform/types';
 import { LocKeys } from 'i18n/platform/loc-keys';
+import { logger } from 'platform/utils/logger';
+import { Event } from 'platform/utils/event';
+import autoBind from 'auto-bind';
 
 interface LocParams {
   [key: string]: string;
@@ -14,9 +17,7 @@ export interface LocalizationState {
 export class LocalizationStore extends BaseStore<LocalizationState> {
   constructor(initialState: LocalizationState) {
     super(initialState);
-
-    this.getLoc = this.getLoc.bind(this);
-    this.fetch = this.fetch.bind(this);
+    autoBind(this);
 
     this.state.getLoc = this.getLoc;
   }
@@ -46,8 +47,20 @@ export class LocalizationStore extends BaseStore<LocalizationState> {
   }
 
   public async fetch(language: string, region: string): Promise<void> {
-    const module = await import(/* webpackChunkName: "[request]" */ `../../../i18n/strings.${language}-${region}`);
-
-    this.state.strings = module.strings;
+    try {
+      const module = await import(
+        /* webpackChunkName: "[request]" */ `../../../i18n/strings.${language}-${region}`
+      );
+      this.state.strings = module.strings;
+    } catch (e) {
+      logger.event(
+        Event.NO_LOCALIZATION_FILE_FOR_REGION_AND_COUNTRY,
+        `no localization file found for ${language}-${region}`,
+        {
+          region,
+          language
+        }
+      );
+    }
   }
 }

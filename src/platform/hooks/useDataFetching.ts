@@ -22,7 +22,8 @@ export function useDataFetching(clientFetch: FetchMethod | undefined): void {
       stores,
       fullPaths: action?.fullPaths ?? [],
       actionPaths: action?.paths ?? [],
-      controllerPath: controllerRegistry.findControllerForAction(action)?.basePath ?? '/'
+      controllerPath: controllerRegistry.findControllerByAction(action)?.basePath ?? '/',
+      isServer: typeof window === 'undefined'
     }),
     [location]
   );

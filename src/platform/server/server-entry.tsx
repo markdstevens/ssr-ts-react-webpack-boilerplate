@@ -33,11 +33,8 @@ server.get('*', async (req, res) => {
 
   initControllers();
 
-  await fetchInitialRouteData(
-    controllerRegistry.findControllerByPath(req.path)?.instance,
-    stores,
-    req.path
-  );
+  const controllerAction = controllerRegistry.findActionByFullPath(req.path);
+  await fetchInitialRouteData(controllerAction, stores, req.path);
 
   const html = renderToString(
     extractor.collectChunks(

@@ -1,12 +1,9 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "module": "commonjs",
-    "lib": ["es6", "es2015"],
-    "declaration": true,
+    "target": "esnext",
+    "lib": ["es6"],
     "strict": true,
     "types": ["node"],
-    "esModuleInterop": true,
-    "resolveJsonModule": true
+    "esModuleInterop": true
   }
 }
