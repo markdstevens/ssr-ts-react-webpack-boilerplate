@@ -1,0 +1,8 @@
+dependencies
+---
+react
+react-router-dom
+react-bootstrap
+platfrom/controllers
+platfrom/utils
+platfrom/stores

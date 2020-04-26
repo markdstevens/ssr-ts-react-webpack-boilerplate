@@ -1,0 +1,9 @@
+dependencies
+---
+react
+react-dom
+react-router-dom
+@loadable/component
+platform/controllers
+platform/components
+platform/stores

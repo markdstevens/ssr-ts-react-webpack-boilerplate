@@ -1,6 +1,11 @@
 {
   "parser": "@typescript-eslint/parser",
-  "extends": ["plugin:react/recommended", "plugin:@typescript-eslint/recommended", "google", "prettier"],
+  "extends": [
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "google",
+    "prettier"
+  ],
   "parserOptions": {
     "ecmaVersion": 2018,
     "sourceType": "module",
@@ -38,7 +43,7 @@
     "require-jsdoc": "off",
     "valid-jsdoc": "off",
     "object-curly-spacing": "off",
-    "no-restricted-imports": ["error", { "patterns": ["../*"] }],
+    "no-restricted-imports": ["off"],
     "no-console": "error"
   },
   "settings": {

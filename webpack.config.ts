@@ -138,7 +138,7 @@ export default (env: WebpackEnvironment = {}): webpack.Configuration[] => {
   }
 
   const clientConfig = merge.smart(baseConfig, {
-    entry: path.join(__dirname, './src/platform/client/client-entry.tsx'),
+    entry: path.join(__dirname, './src/platform/client/src/client-entry.tsx'),
     target: 'web',
     output: {
       filename: 'client.js',
@@ -187,7 +187,7 @@ export default (env: WebpackEnvironment = {}): webpack.Configuration[] => {
   }
 
   const serverConfig = merge.smart(baseConfig, {
-    entry: './src/platform/server/server-entry.tsx',
+    entry: './src/platform/server/src/server-entry.tsx',
     target: 'node',
     externals: [nodeExternals()],
     output: {
