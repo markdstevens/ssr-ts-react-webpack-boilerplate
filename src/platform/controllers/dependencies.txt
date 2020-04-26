@@ -1,5 +1,8 @@
 dependencies
 ---
+react (should be removed)
 @loadable/component
 platform/utils
 platform/views
+platform/stores (should be removed)
+auto-bind
