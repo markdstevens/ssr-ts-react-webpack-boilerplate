@@ -4,7 +4,7 @@ import { camelCase } from 'camel-case';
 import rimraf from 'rimraf';
 import path from 'path';
 
-const applicationStores = readdirSync(path.join(__dirname, '../../common/stores'));
+const applicationStores = readdirSync(path.join(__dirname, '../../stores'));
 const storesMetaData = applicationStores
   .map(appStore => appStore.replace('.ts', ''))
   .map(appStore => ({
@@ -20,15 +20,19 @@ const storesMetaData = applicationStores
   }));
 
 const template = `import React, { FunctionComponent, useReducer, ReactNode, useEffect } from 'react';
-import { Stores } from 'platform/stores/types';
-import { ServerContextStoreProvider, ServerContextStore } from 'platform/stores/server-context-store';
-import { AllStoreContextProvider } from 'platform/stores/all-store-context';
-import { LocalizationStoreProvider, LocalizationStore } from 'platform/stores/localization-store';
-import { debounce } from 'platform/utils/debounce';
+import {
+  Stores,
+  ServerContextStoreProvider,
+  ServerContextStore,
+  AllStoreContextProvider,
+  LocalizationStoreProvider,
+  LocalizationStore
+} from 'platform/stores';
+import { debounce } from 'platform/utils';
 ${storesMetaData
   .map(
     ({ storeProvider, pascalStoreName, originalName }) =>
-      `import { ${pascalStoreName} } from 'stores/${originalName}';\nimport { ${storeProvider} } from 'platform/stores/${originalName}/context';`
+      `import { ${pascalStoreName} } from 'stores/${originalName}';\nimport { ${storeProvider} } from 'platform/stores/src/${originalName}/context';`
   )
   .join('\n')}
 
@@ -121,9 +125,9 @@ export function initCustomServerStores(): StoreMap {
 }
 `;
 
-const storeProvidersFile = '../common/StoreProviders.tsx';
-const customClientStoresFile = '../client/init-custom-client-stores.ts';
-const customServerStoresFile = '../server/init-custom-server-stores.ts';
+const storeProvidersFile = '../components/src/StoreProviders.tsx';
+const customClientStoresFile = '../client/src/init-custom-client-stores.ts';
+const customServerStoresFile = '../server/src/init-custom-server-stores.ts';
 
 existsSync(storeProvidersFile) ? unlinkSync(storeProvidersFile) : null;
 existsSync(customClientStoresFile) ? unlinkSync(customClientStoresFile) : null;
@@ -141,15 +145,15 @@ export const TodoStoreProvider = TodoStoreContext.Provider;
 `;
 
 const whitelistedStores = ['localization-store', 'server-context-store', 'base-store'];
-readdirSync(path.join(__dirname, '../stores'))
+readdirSync(path.join(__dirname, '../stores/src'))
   .filter(store => !whitelistedStores.includes(store) && store.endsWith('-store'))
   .forEach(store => {
-    rimraf.sync(path.join(__dirname, `../stores/${store}`));
+    rimraf.sync(path.join(__dirname, `../stores/src/${store}`));
   });
 
 storesMetaData.forEach(
   ({ originalName, storeContext, storeProvider, storeState, storeHook, storeReducerType }) => {
-    const storeDir = path.join(__dirname, `../stores/${originalName}`);
+    const storeDir = path.join(__dirname, `../stores/src/${originalName}`);
 
     mkdirSync(storeDir);
     writeFileSync(
@@ -165,7 +169,7 @@ export const ${storeProvider} = ${storeContext}.Provider;
     writeFileSync(
       `${storeDir}/reducer.ts`,
       `import { ${storeState} } from 'stores/${originalName}';
-import { Reducer } from 'platform/stores/types';
+import { Reducer } from '../types';
 
 export type ${storeReducerType} = Reducer<${storeState}>;
 `

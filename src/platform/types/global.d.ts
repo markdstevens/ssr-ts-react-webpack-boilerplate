@@ -1,4 +1,4 @@
-import { Stores, StoreMap } from 'platform/stores/types';
+import { Stores, StoreMap } from 'platform/stores/src/types';
 
 interface ServiceWorkerRoute {
   url: string;

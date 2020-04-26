@@ -1,0 +1,8 @@
+dependencies
+---
+react (should be removed)
+react-router-dom
+axios
+url
+platform/utils
+platform/controllers

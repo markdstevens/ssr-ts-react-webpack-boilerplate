@@ -1,0 +1,5 @@
+dependencies
+---
+react
+auto-bind
+platform/utils

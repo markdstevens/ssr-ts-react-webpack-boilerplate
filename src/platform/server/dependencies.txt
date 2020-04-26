@@ -1,0 +1,14 @@
+dependencies
+---
+react
+react-dom/server
+react-router-dom
+@loadable/server
+path
+express
+express-locale
+platform/stores
+platform/server
+platform/controllers
+platform/utils
+platform/components

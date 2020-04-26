@@ -2,7 +2,7 @@ import { readdirSync, writeFileSync, unlinkSync, existsSync } from 'fs';
 import { pascalCase } from 'pascal-case';
 import path from 'path';
 
-const controllers = readdirSync(path.join(__dirname, '../../common/controllers'));
+const controllers = readdirSync(path.join(__dirname, '../../controllers'));
 const controllersMetaData = controllers
   .map(controller => controller.replace('.ts', ''))
   .map(controller => ({
@@ -10,7 +10,7 @@ const controllersMetaData = controllers
     originalControllerName: controller
   }));
 
-const controllerTemplate = `import { Controller } from 'platform/controllers/controller';
+const controllerTemplate = `import { Controller } from './controller';
 ${controllersMetaData
   .map(
     ({ pascalControllerName, originalControllerName }) =>
@@ -23,7 +23,7 @@ export const initControllers = (): Controller[] => [${controllersMetaData
   .join(', ')}];
 `;
 
-const controllerPath = path.join(__dirname, '../controllers/init-controllers.ts');
+const controllerPath = path.join(__dirname, '../controllers/src/init-controllers.ts');
 
 if (existsSync(controllerPath)) {
   unlinkSync(controllerPath);
