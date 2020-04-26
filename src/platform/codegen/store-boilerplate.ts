@@ -85,7 +85,7 @@ export const StoreProviders: FunctionComponent<StoresProps> = ({ children, store
 };
 `;
 
-const initClientStores = `import { StoreMap } from 'platform/stores/types';
+const initClientStores = `import { StoreMap } from 'platform/stores';
 ${storesMetaData
   .map(
     ({ pascalStoreName, originalName }) =>
@@ -105,7 +105,7 @@ export function initCustomClientStores(serializedStores: StoreMap): StoreMap {
 }
 `;
 
-const initServerStores = `import { StoreMap } from 'platform/stores/types';
+const initServerStores = `import { StoreMap } from 'platform/stores';
 ${storesMetaData
   .map(
     ({ pascalStoreName, originalName }) =>
