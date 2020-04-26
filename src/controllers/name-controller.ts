@@ -1,4 +1,4 @@
-import { baseRoute, route, view, Controller } from 'platform/controllers';
+import { baseRoute, route, view, Controller, staticRoute, staticView } from 'platform/controllers';
 import loadable from '@loadable/component';
 import { logger } from 'platform/utils';
 
@@ -15,4 +15,8 @@ export class NameController extends Controller {
   public async findName(): Promise<void> {
     logger.info();
   }
+
+  @staticRoute('/home')
+  @staticView(loadable(() => import('../views/home')))
+  public home: any;
 }
